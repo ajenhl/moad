@@ -23,9 +23,14 @@ class Person (Namable, Notable, models.Model):
 
 class Source (models.Model):
 
-    name = models.TextField()
+    name = models.TextField(help_text='Full bibliographic details')
+    date = models.CharField(max_length=5, help_text='Format: YYYY')
+    abbreviation = models.CharField(
+        max_length=10, help_text='Bibliographic reference, eg. Nat1992')
 
-    @staticmethod
+    class Meta:
+        ordering = ['-date']
+
     def autocomplete_search_fields ():
         return ('id__iexact', 'name__icontains')
 
@@ -62,6 +67,9 @@ class PropertyAssertion (models.Model):
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
     is_preferred = models.BooleanField()
+
+    class Meta:
+        ordering = ['source']
 
     def __unicode__ (self):
         argument = u'[No argument provided]'

@@ -1,0 +1,5 @@
+{% if data %}
+  {{ data.value }} [<a href="#assertion-{{ data.id }}">{{ data.source }}</a>]
+{% else %}
+  [None]
+{% endif %}

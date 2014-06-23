@@ -1,7 +1,11 @@
 from django.shortcuts import get_object_or_404, render
 
 import attribution.models
+import attribution.utils
 
+
+def home_display (request):
+    return render(request, 'attribution/display/home.html')
 
 def person_display (request, person_id):
     person = get_object_or_404(attribution.models.Person, pk=person_id)
@@ -15,8 +19,9 @@ def person_list_display (request):
 
 def text_display (request, text_id):
     text = get_object_or_404(attribution.models.Text, pk=text_id)
-    assertions = text.assertions.order_by('is_preferred')
-    context = {'text': text, 'assertions': assertions}
+    assertions = text.assertions
+    summary = attribution.utils.get_text_summary(assertions)
+    context = {'text': text, 'assertions': assertions, 'summary': summary}
     return render(request, 'attribution/display/text.html', context)
 
 def text_list_display (request):

@@ -33,6 +33,15 @@ class TitleInline (admin.TabularInline):
 
 class PropertyAssertionAdmin (admin.ModelAdmin):
 
+    fieldsets = (
+        (None, {'fields': ('texts',)}),
+        ('People', {'fields': ('authors', 'translators')}),
+        (None, {'classes': ('placeholder titles-group',), 'fields': ()}),
+        (None, {'classes': ('placeholder dates-group',), 'fields': ()}),
+        (None, {'classes': ('placeholder identifiers-group',), 'fields': ()}),
+        ('Source and argument',
+         {'fields': ('source', 'source_detail', 'argument', 'is_preferred')}),
+    )
     filter_horizontal = ['authors', 'texts', 'translators']
     inlines = [DateInline, IdentifierInline, TitleInline]
     raw_id_fields = ('source',)

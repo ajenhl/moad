@@ -7,6 +7,34 @@
 <h1>Text: {{ text }}</h1>
 </header>
 
+<h2>Summary</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Identifier</td>
+      <td>{% include "attribution/display/text_summary.html" with data=summary.identifier %}</td>
+    </tr>
+    <tr>
+      <td>Title</td>
+      <td>{% include "attribution/display/text_summary.html" with data=summary.title %}</td>
+    </tr>
+    <tr>
+      <td>Author</td>
+      <td>{% include "attribution/display/text_summary.html" with data=summary.author %}</td>
+    </tr>
+    <tr>
+      <td>Translator</td>
+      <td>{% include "attribution/display/text_summary.html" with data=summary.translator %}</td>
+    <tr>
+      <td>Date</td>
+      <td>{% include "attribution/display/text_summary.html" with data=summary.date %}</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Assertions</h2>
+
 <table>
   <thead>
     <tr>
@@ -17,40 +45,46 @@
   </thead>
   <tbody>
   {% for assertion in text.assertions.all %}
-    <td>
-      {{ assertion.source }}
-      {% if assertion.source_detail %}
-      &#8212; {{ assertion.source_detail }}
-      {% endif %}
-    </td>
-    <td>
-      <ul class="no-bullet">
-        {% include "attribution/display/text_property.html" with title="Title" properties=assertion.titles.all %}
-
-        {% include "attribution/display/text_person.html" with title="Author" people=assertion.authors.all %}
-
-        {% include "attribution/display/text_person.html" with title="Translator" people=assertion.translators.all %}
-
-        {% include "attribution/display/text_property.html" with title="Date" properties=assertion.dates.all %}
-
-        {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
-
-        {% with texts=assertion.texts.all %}
-        {% if texts|length > 1 %}
-        <li>Other texts:
-          <ul class="no-bullet">
-            {% for other_text in texts %}
-            {% if other_text != text %}
-            <li><a href="{% url 'text_display' other_text.pk %}">{{ other_text }}</a></li>
-            {% endif %}
-            {% endfor %}
-          </ul>
-        </li>
-        {% endif %}
+    <tr>
+      <td id="assertion-{{ assertion.pk }}">
+        {% with source=assertion.source %}
+        [{{ source.abbreviation }}]&nbsp;&nbsp; {{ source }}
         {% endwith %}
-      </ul>
-    </td>
-    <td>{{ assertion.argument }}</td>
+        {% if assertion.source_detail %}
+        &#8212; {{ assertion.source_detail }}
+        {% endif %}
+      </td>
+      <td>
+        <ul class="no-bullet">
+          {% include "attribution/display/text_property.html" with title="Title" properties=assertion.titles.all %}
+
+          {% include "attribution/display/text_person.html" with title="Author" people=assertion.authors.all %}
+
+          {% include "attribution/display/text_person.html" with title="Translator" people=assertion.translators.all %}
+
+          {% include "attribution/display/text_property.html" with title="Date" properties=assertion.dates.all %}
+
+          {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
+
+          {% with texts=assertion.texts.all %}
+          {% if texts|length > 1 %}
+          <li>Other texts:
+            <ul class="no-bullet">
+              {% for other_text in texts %}
+              {% if other_text != text %}
+              <li><a href="{% url 'text_display' other_text.pk %}">{{ other_text }}</a></li>
+              {% endif %}
+              {% endfor %}
+            </ul>
+          </li>
+          {% endif %}
+          {% endwith %}
+        </ul>
+      </td>
+      <td>{% if assertion.argument %}{{ assertion.argument }}<br>{% endif %}
+        <a href="{% url 'admin:attribution_propertyassertion_change' assertion.pk %}">Edit</a>
+      </td>
+    </tr>
   {% endfor %}
   </tbody>
 </table>
