@@ -1,0 +1,62 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-jas" lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'foundation/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'foundation/css/foundation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    {% endblock css %}
+    {% block js %}
+    <script src="{% static 'foundation/js/vendor/modernizr.js' %}"></script>
+    {% endblock js %}
+  </head>
+  <body>
+  {% block body %}
+    {% block top_nav %}
+    <nav class="top-bar" data-topbar>
+      <ul class="title-area">
+        <li class="name">
+          <h1><a href="#">CBC@</a></h1>
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+      </ul>
+
+      <section class="top-bar-section">
+        <ul class="left">
+          <li><a href="{% url 'text_list_display' %}">Texts</a></li>
+          <li><a href="{% url 'person_list_display' %}">People</a></li>
+        </ul>
+      </section>
+    </nav>
+    {% endblock top_nav %}
+    <div class="row">
+      <div class="small-12 columns">
+        {% block content %}
+
+        {% endblock content %}
+      </div>
+    </div>
+    {% block footer %}
+    <div class="row">
+      <div class="small-12 columns">
+        <footer>
+          <p>The Chinese Buddhist Canons Attribution project is the
+          brainchild of Michael Radich &lt;Michael.Radich@vuw.ac.nz&gt;.</p>
+        </footer>
+      </div>
+    </div>
+    {% endblock footer %}
+    {% block end_js %}
+    <script src="{% static 'foundation/js/vendor/jquery.js' %}"></script>
+    <script src="{% static 'foundation/js/foundation.min.js' %}"></script>
+    <script>
+      $(document).foundation();
+    </script>
+    {% endblock end_js %}
+  {% endblock body %}
+  </body>
+</html>

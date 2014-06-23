@@ -1,59 +1,70 @@
 from django.db import models
 
-from .behaviours import Namable
-import constants
+from .behaviours import Namable, Notable
 
 
-class Text (models.Model):
+class Date (Namable, Notable, models.Model):
 
-    def _get_property_assertions (self, property_name):
-        lookup = '{}__isnull'.format(property_name)
-        return self.assertions.filter(**{lookup: False}).order_by(
-            'is_preferred')
-
-    def __unicode__ (self):
-        id_assertions = self._get_property_assertions(
-            constants.IDENTIFIER_PROPERTY)
-        ids = id_assertions.values_list('identifier', flat=True)
-        return '; '.join(ids) or '[No identifier supplied]'
+    assertion = models.ForeignKey('PropertyAssertion',
+                                  related_name='dates')
 
 
-class Date (models.Model):
+class Identifier (Namable, Notable, models.Model):
 
-    date = models.CharField(max_length=200)
-
-
-class Identifier (Namable, models.Model):
-
-    assertion = models.ForeignKey('PropertyAssertion')
+    assertion = models.ForeignKey('PropertyAssertion',
+                                  related_name='identifiers')
 
 
-class Person (Namable, models.Model):
+class Person (Namable, Notable, models.Model):
 
-    pass
+    class Meta:
+        ordering = ['name']
 
 
 class Source (models.Model):
 
     name = models.TextField()
 
+    @staticmethod
+    def autocomplete_search_fields ():
+        return ('id__iexact', 'name__icontains')
+
     def __unicode__ (self):
         return self.name
 
 
+class Text (models.Model):
+
+    def __unicode__ (self):
+        ids = Identifier.objects.filter(assertion__texts=self).values_list(
+            'name', flat=True)
+        return u'; '.join(ids) or u'[No identifier supplied]'
+
+
 class Title (Namable, models.Model):
 
-    pass
+    assertion = models.ForeignKey('PropertyAssertion',
+                                  related_name='titles')
+
+    @staticmethod
+    def autocomplete_search_fields ():
+        return ('id__iexact', 'name__icontains')
 
 
 class PropertyAssertion (models.Model):
 
     texts = models.ManyToManyField(Text, related_name='assertions')
-    titles = models.ManyToManyField(Title, null=True)
-    authors = models.ManyToManyField(Person, null=True, related_name='authored')
-    translators = models.ManyToManyField(Person, null=True,
+    authors = models.ManyToManyField(Person, blank=True, null=True,
+                                     related_name='authored')
+    translators = models.ManyToManyField(Person, blank=True, null=True,
                                          related_name='translated')
     source = models.ForeignKey(Source)
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
     is_preferred = models.BooleanField()
+
+    def __unicode__ (self):
+        argument = u'[No argument provided]'
+        if self.argument:
+            argument = u'%s...' % self.argument[:30]
+        return argument

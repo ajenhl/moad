@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'moad.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^', include('attribution.urls')),
+    url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )

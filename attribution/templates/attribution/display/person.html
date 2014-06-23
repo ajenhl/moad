@@ -1,0 +1,30 @@
+{% extends "attribution/display/base.html" %}
+
+{% block content %}
+<header>
+  <h1>Person: {{ person }}</h1>
+</header>
+
+{% if person.notes %}
+<p>{{ person.notes }}</p>
+{% endif %}
+
+{% with translations=person.translated.all %}
+{% if translations %}
+<h2>Ascribed Translations</h2>
+
+{% include "attribution/display/person_text.html" with title="Translated text" assertions=translations %}
+
+{% endif %}
+{% endwith %}
+
+{% with authored=person.authored.all %}
+{% if authored %}
+<h2>Ascribed Writings</h2>
+
+{% include "attribution/display/person_text.html" with title="Authored text" assertions=authored %}
+
+{% endif %}
+{% endwith %}
+
+{% endblock content %}

@@ -1,0 +1,15 @@
+{% extends "attribution/display/base.html" %}
+
+{% block content %}
+<header>
+  <h1>Texts</h1>
+</header>
+
+<ul>
+  {% for text in texts %}
+  <li>
+    <a href="{% url 'text_display' text.pk %}">{{ text }}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock content %}

@@ -1,0 +1,57 @@
+{% extends "attribution/display/base.html" %}
+
+{% block title %}Text: {{ text }}{% endblock title %}
+
+{% block content %}
+<header>
+<h1>Text: {{ text }}</h1>
+</header>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Source</th>
+      <th scope="col">Assertion</th>
+      <th scope="col">Argument</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for assertion in text.assertions.all %}
+    <td>
+      {{ assertion.source }}
+      {% if assertion.source_detail %}
+      &#8212; {{ assertion.source_detail }}
+      {% endif %}
+    </td>
+    <td>
+      <ul class="no-bullet">
+        {% include "attribution/display/text_property.html" with title="Title" properties=assertion.titles.all %}
+
+        {% include "attribution/display/text_person.html" with title="Author" people=assertion.authors.all %}
+
+        {% include "attribution/display/text_person.html" with title="Translator" people=assertion.translators.all %}
+
+        {% include "attribution/display/text_property.html" with title="Date" properties=assertion.dates.all %}
+
+        {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
+
+        {% with texts=assertion.texts.all %}
+        {% if texts|length > 1 %}
+        <li>Other texts:
+          <ul class="no-bullet">
+            {% for other_text in texts %}
+            {% if other_text != text %}
+            <li><a href="{% url 'text_display' other_text.pk %}">{{ other_text }}</a></li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+        {% endif %}
+        {% endwith %}
+      </ul>
+    </td>
+    <td>{{ assertion.argument }}</td>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}

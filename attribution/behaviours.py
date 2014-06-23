@@ -10,3 +10,11 @@ class Namable (models.Model):
 
     def __unicode__ (self):
         return self.name
+
+
+class Notable (models.Model):
+
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        abstract = True

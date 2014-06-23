@@ -1,0 +1,22 @@
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Source</th>
+      <th scope="col">{{ title }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for assertion in assertions %}
+    <tr>
+      <td>{{ assertion.source }}</td>
+      <td>
+        <ul class="no-bullet">
+          {% for text in assertion.texts.all %}
+          <li><a href="{% url 'text_display' text.pk %}">{{ text }}</a></li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
