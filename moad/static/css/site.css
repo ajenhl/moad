@@ -1,0 +1,9 @@
+footer {
+    border-top: black 1px solid;
+    font-size: smaller;
+    padding-top: 1em;
+}
+
+td {
+    vertical-align: top;
+}
