@@ -1,7 +1,8 @@
 def _assemble_preferred_assertion_data (assertion, property_name):
     data = None
     if assertion is not None:
-        value = '; '.join([unicode(prop) for prop in getattr(assertion, property_name).all()])
+        value = '; '.join([unicode(prop) for prop
+                           in getattr(assertion, property_name).all()])
         data = {'value': value, 'id': assertion.pk,
                 'source': assertion.source.abbreviation}
     return data

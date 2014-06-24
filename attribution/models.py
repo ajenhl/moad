@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 
 from .behaviours import Namable, Notable
@@ -20,11 +21,14 @@ class Person (Namable, Notable, models.Model):
     class Meta:
         ordering = ['name']
 
+    def get_absolute_url (self):
+        return reverse('person_display', args=[str(self.id)])
+
 
 class Source (models.Model):
 
     name = models.TextField(help_text='Full bibliographic details')
-    date = models.CharField(max_length=5, help_text='Format: YYYY')
+    date = models.CharField(max_length=5, help_text='Format: YYYY. Use the earliest date if there is a range')
     abbreviation = models.CharField(
         max_length=10, help_text='Bibliographic reference, eg. Nat1992')
 
@@ -34,11 +38,17 @@ class Source (models.Model):
     def autocomplete_search_fields ():
         return ('id__iexact', 'name__icontains')
 
+    def get_absolute_url (self):
+        return reverse('source_display', args=[str(self.id)])
+
     def __unicode__ (self):
         return self.name
 
 
 class Text (models.Model):
+
+    def get_absolute_url (self):
+        return reverse('text_display', args=[str(self.id)])
 
     def __unicode__ (self):
         ids = Identifier.objects.filter(assertion__texts=self).values_list(
@@ -63,12 +73,13 @@ class PropertyAssertion (models.Model):
                                      related_name='authored')
     translators = models.ManyToManyField(Person, blank=True, null=True,
                                          related_name='translated')
-    source = models.ForeignKey(Source)
+    source = models.ForeignKey(Source, related_name='assertions')
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
     is_preferred = models.BooleanField()
 
     class Meta:
+        verbose_name = 'assertion'
         ordering = ['source']
 
     def __unicode__ (self):

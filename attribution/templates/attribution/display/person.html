@@ -1,5 +1,7 @@
 {% extends "attribution/display/base.html" %}
 
+{% block title %}{{ block.super }}Person: {{ person }}{% endblock title %}
+
 {% block content %}
 <header>
   <h1>Person: {{ person }}</h1>

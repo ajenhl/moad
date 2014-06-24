@@ -1,0 +1,17 @@
+{% extends "attribution/display/base.html" %}
+
+{% block title %}{{ block.super }}List of sources{% endblock title %}
+
+{% block content %}
+<header>
+  <h1>Sources</h1>
+</header>
+
+<ul>
+  {% for source in sources %}
+  <li>
+    <a href="{% url 'source_display' source.id %}">{{ source }}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock content %}

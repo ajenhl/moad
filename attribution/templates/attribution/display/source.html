@@ -1,0 +1,50 @@
+{% extends "attribution/display/base.html" %}
+
+{% block title %}{{ block.super }}Source: {{ source.abbreviation }}{% endblock title %}
+
+{% block content %}
+<header>
+  <h1>Source: {{ source.abbreviation }}</h1>
+</header>
+
+<p>{{ source }}</p>
+
+<h2>Assertions</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Assertion</th>
+      <th scope="col">Argument</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for assertion in source.assertions.all %}
+    <tr>
+      <td>
+        <ul class="no-bullet">
+          <li>Text: {% for text in assertion.texts.all %}
+            <a href="{% url 'text_display' text.id %}">{{ text }}</a>
+            {% if not forloop.last %}; {% endif %}
+            {% endfor %}
+          </li>
+          {% include "attribution/display/text_property.html" with title="Title" properties=assertion.titles.all %}
+
+          {% include "attribution/display/text_person.html" with title="Author" people=assertion.authors.all %}
+
+          {% include "attribution/display/text_person.html" with title="Translator" people=assertion.translators.all %}
+
+          {% include "attribution/display/text_property.html" with title="Date" properties=assertion.dates.all %}
+
+          {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
+        </ul>
+      </td>
+      <td>{{ assertion.argument }}
+        {% if assertion.argument and assertion.source_detail %}<br>
+        &#8213; {{ assertioon.source_detail }}{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock content %}
