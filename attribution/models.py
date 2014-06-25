@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from django.db import models
+from django.db import models, transaction
 
 from .behaviours import Namable, Notable
 
@@ -45,15 +45,39 @@ class Source (models.Model):
         return self.name
 
 
+class TextIdentifierCache (models.Model):
+
+    text = models.OneToOneField('Text', related_name='cached_identifier')
+    identifier = models.TextField(blank=True)
+
+    def __unicode__ (self):
+        return self.identifier
+
+
 class Text (models.Model):
 
     def get_absolute_url (self):
         return reverse('text_display', args=[str(self.id)])
 
-    def __unicode__ (self):
+    def generate_identifier (self):
+        """Generates a composite identifier """
         ids = Identifier.objects.filter(assertion__texts=self).values_list(
             'name', flat=True)
         return u'; '.join(ids) or u'[No identifier supplied]'
+
+    @transaction.atomic
+    def save (self, *args, **kwargs):
+        super(Text, self).save(*args, **kwargs)
+        identifier = self.generate_identifier()
+        try:
+            cache = self.cached_identifier
+            cache.identifier = identifier
+        except TextIdentifierCache.DoesNotExist:
+            cache = TextIdentifierCache(text=self, identifier=identifier)
+        cache.save()
+
+    def __unicode__ (self):
+        return unicode(self.cached_identifier)
 
 
 class Title (Namable, models.Model):
@@ -81,6 +105,17 @@ class PropertyAssertion (models.Model):
     class Meta:
         verbose_name = 'assertion'
         ordering = ['source']
+
+    def delete (self, *args, **kwargs):
+        texts = list(self.texts.all())
+        super(PropertyAssertion, self).delete(*args, **kwargs)
+        for text in texts:
+            text.save()
+
+    def save (self, *args, **kwargs):
+        super(PropertyAssertion, self).save(*args, **kwargs)
+        for text in self.texts.all():
+            text.save()
 
     def __unicode__ (self):
         argument = u'[No argument provided]'

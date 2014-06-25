@@ -57,7 +57,12 @@ class SourceAdmin (NamableAdmin, admin.ModelAdmin):
 
 class TextAdmin (admin.ModelAdmin):
 
-    inlines = [TextAssertionsInline]
+    actions = ['regenerate_identifier']
+
+    def regenerate_identifier (self, request, queryset):
+        for text in queryset:
+            text.save()
+    regenerate_identifier.short_description = 'Update the generated identifier for the selected texts'
 
 
 admin.site.register(Date)

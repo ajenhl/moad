@@ -35,6 +35,7 @@ def text_display (request, text_id):
     return render(request, 'attribution/display/text.html', context)
 
 def text_list_display (request):
-    texts = attribution.models.Text.objects.all()
+    texts = attribution.models.Text.objects.select_related('cached_identifier').order_by(
+        'cached_identifier__identifier')
     context = {'texts': texts}
     return render(request, 'attribution/display/text_list.html', context)
