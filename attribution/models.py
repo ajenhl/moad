@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from django.db import models, transaction
+from django.db import models
 
 from .behaviours import Namable, Notable
 
@@ -18,6 +18,8 @@ class Identifier (Namable, Notable, models.Model):
 
 class Person (Namable, Notable, models.Model):
 
+    date = models.TextField(blank=True)
+
     class Meta:
         ordering = ['name']
 
@@ -30,11 +32,13 @@ class Source (models.Model):
     name = models.TextField(help_text='Full bibliographic details')
     date = models.CharField(max_length=5, help_text='Format: YYYY. Use the earliest date if there is a range')
     abbreviation = models.CharField(
-        max_length=10, help_text='Bibliographic reference, eg. Nat1992')
+        max_length=30, help_text='Bibliographic reference, eg. "Nattier 1992"',
+        unique=True)
 
     class Meta:
         ordering = ['-date']
 
+    @staticmethod
     def autocomplete_search_fields ():
         return ('id__iexact', 'name__icontains')
 
@@ -60,12 +64,15 @@ class Text (models.Model):
         return reverse('text_display', args=[str(self.id)])
 
     def generate_identifier (self):
-        """Generates a composite identifier """
-        ids = Identifier.objects.filter(assertion__texts=self).values_list(
-            'name', flat=True)
-        return u'; '.join(ids) or u'[No identifier supplied]'
+        """Generates a composite identifier from the texts identifiers and
+        titles."""
+        identifiers = Identifier.objects.filter(assertion__texts=self)
+        titles = Title.objects.filter(assertion__texts=self)
+        identifier = u'; '.join(
+            list(identifiers.values_list('name', flat=True)) + \
+            list(titles.values_list('name', flat=True)))
+        return identifier or u'[No identifier supplied]'
 
-    @transaction.atomic
     def save (self, *args, **kwargs):
         super(Text, self).save(*args, **kwargs)
         identifier = self.generate_identifier()
@@ -110,11 +117,6 @@ class PropertyAssertion (models.Model):
         texts = list(self.texts.all())
         super(PropertyAssertion, self).delete(*args, **kwargs)
         for text in texts:
-            text.save()
-
-    def save (self, *args, **kwargs):
-        super(PropertyAssertion, self).save(*args, **kwargs)
-        for text in self.texts.all():
             text.save()
 
     def __unicode__ (self):

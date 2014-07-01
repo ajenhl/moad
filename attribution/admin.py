@@ -86,6 +86,11 @@ class PropertyAssertionAdmin (admin.ModelAdmin):
         'fk': ['source'],
     }
 
+    def save_related (self, request, form, formsets, change):
+        super(PropertyAssertionAdmin, self).save_related(request, form,
+                                                         formsets, change)
+        for text in form.instance.texts.all():
+            text.save()
 
 class SourceAdmin (NamableAdmin, admin.ModelAdmin):
 
