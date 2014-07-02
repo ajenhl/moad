@@ -41,6 +41,7 @@ THIRD_PARTY_APPS = (
 )
 
 LOCAL_APPS = (
+    'logentry_admin',
     'attribution',
 )
 
