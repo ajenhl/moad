@@ -30,7 +30,7 @@ class PropertyAssertionAdmin (admin.ModelAdmin):
 
     list_display = ('source', 'argument', 'is_preferred')
     list_filter = ('is_preferred',)
-    search_fields = ('source', 'argument')
+    search_fields = ('source__name', 'argument')
     fieldsets = (
         (None, {'fields': ('texts',)}),
         ('People', {'fields': ('authors', 'translators')}),
