@@ -28,7 +28,8 @@ class TitleInline (admin.TabularInline):
 
 class PropertyAssertionAdmin (admin.ModelAdmin):
 
-    list_display = ('source', 'argument', 'is_preferred')
+    list_display = ('source_abbreviation', 'argument', 'is_preferred')
+    list_display_links = ('source_abbreviation', 'argument')
     list_filter = ('is_preferred',)
     search_fields = ('source__name', 'argument')
     fieldsets = (
@@ -53,9 +54,12 @@ class PropertyAssertionAdmin (admin.ModelAdmin):
         for text in form.instance.texts.all():
             text.save()
 
+    def source_abbreviation (self, obj):
+        return obj.source.abbreviation
+
 class SourceAdmin (NamableAdmin, admin.ModelAdmin):
 
-    list_display = ('name', 'date', 'abbreviation')
+    list_display = ('abbreviation', 'name', 'date')
     search_fields = ['name']
 
 
