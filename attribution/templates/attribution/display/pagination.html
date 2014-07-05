@@ -1,0 +1,17 @@
+<div class="pagination-centred">
+  <ul class="pagination">
+    {% if first_link %}<li class="arrow">
+      <a href="?page=1{{ query_string }}">&laquo;</a>
+    </li>{% endif %}
+    {% for page_number in pre_pages %}
+    <li><a href="?page={{ page_number }}{{ query_string }}">{{ page_number }}</a></li>
+    {% endfor %}
+    <li class="current"><a href="">{{ current_page }}</a></li>
+    {% for page_number in post_pages %}
+    <li><a href="?page={{ page_number }}{{ query_string }}">{{ page_number }}</a></li>
+    {% endfor %}
+    {% if last_link %}<li class="arrow">
+      <a href="?page={{ last_page }}{{ query_string }}">&raquo;</a>
+    </li>{% endif %}
+  </ul>
+</div>

@@ -1,4 +1,5 @@
 {% extends "attribution/display/base.html" %}
+{% load pagination_display %}
 
 {% block title %}{{ block.super }}List of sources{% endblock title %}
 
@@ -7,6 +8,10 @@
   <h1>Sources</h1>
 </header>
 
+<form action="" method="get">
+<p>Filter texts by search term: <input name="q" type="search" value="{{ filter }}"></p>
+</form>
+
 <ul>
   {% for source in sources %}
   <li>
@@ -14,4 +19,7 @@
   </li>
   {% endfor %}
 </ul>
+
+{% show_pagination num_pages current_page query_parameters %}
+
 {% endblock content %}
