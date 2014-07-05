@@ -67,6 +67,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
 )
 
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'moad/templates')
+)
+
 ROOT_URLCONF = 'moad.urls'
 
 WSGI_APPLICATION = 'moad.wsgi.application'
@@ -75,7 +79,7 @@ WSGI_APPLICATION = 'moad.wsgi.application'
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-nz'
 
 TIME_ZONE = 'UTC'
 
