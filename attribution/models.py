@@ -119,6 +119,15 @@ class PropertyAssertion (models.Model):
         for text in texts:
             text.save()
 
+    def has_other_assertions (self):
+        """Returns True if any of the texts associated with this assertion
+        have other property assertions."""
+        other = PropertyAssertion.objects.exclude(id=self.id).filter(
+            texts__assertions__id=self.id).count()
+        if other:
+            return True
+        return False
+
     def __unicode__ (self):
         argument = u'[No argument provided]'
         if self.argument:

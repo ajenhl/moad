@@ -1,14 +1,15 @@
-<table>
+<table id="{{ id }}">
   <thead>
     <tr>
-      <th scope="col">Source</th>
       <th scope="col">{{ title }}</th>
+      <th scope="col">Is preferred?</th>
+      <th scope="col">Has other assertions?</th>
+      <th scope="col">Source</th>
     </tr>
   </thead>
   <tbody>
     {% for assertion in assertions %}
     <tr>
-      <td>{{ assertion.source }}</td>
       <td>
         <ul class="no-bullet">
           {% for text in assertion.texts.all %}
@@ -16,6 +17,9 @@
           {% endfor %}
         </ul>
       </td>
+      <td>{{ assertion.is_preferred|yesno:"Yes,No" }}</td>
+      <td>{{ assertion.has_other_assertions|yesno:"Yes,No" }}</td>
+      <td>{{ assertion.source }}</td>
     </tr>
     {% endfor %}
   </tbody>

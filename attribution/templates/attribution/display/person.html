@@ -2,6 +2,12 @@
 
 {% block title %}{{ block.super }}Person: {{ person }}{% endblock title %}
 
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.css">
+{% endblock css %}
+
 {% block content %}
 <header>
   <h1>Person: {{ person }}</h1>
@@ -15,7 +21,7 @@
 {% if translations %}
 <h2>Ascribed Translations</h2>
 
-{% include "attribution/display/person_text.html" with title="Translated text" assertions=translations %}
+{% include "attribution/display/person_text.html" with title="Translated text" assertions=translations id="translator-table" %}
 
 {% endif %}
 {% endwith %}
@@ -24,9 +30,21 @@
 {% if authored %}
 <h2>Ascribed Writings</h2>
 
-{% include "attribution/display/person_text.html" with title="Authored text" assertions=authored %}
+{% include "attribution/display/person_text.html" with title="Authored text" assertions=authored id="author-table" %}
 
 {% endif %}
 {% endwith %}
 
 {% endblock content %}
+
+{% block end_js %}
+{{ block.super }}
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
+<script>
+$(document).ready(function () {
+  $('#translator-table').DataTable();
+  $('#author-table').DataTable();
+});
+</script>
+{% endblock end_js %}
