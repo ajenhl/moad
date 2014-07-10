@@ -26,6 +26,11 @@ class TitleInline (admin.TabularInline):
     model = Title
 
 
+class PersonAdmin (admin.ModelAdmin):
+
+    list_display = ('name', 'date', 'sort_date')
+
+
 class PropertyAssertionAdmin (admin.ModelAdmin):
 
     list_display = ('source_abbreviation', 'argument', 'is_preferred')
@@ -75,7 +80,7 @@ class TextAdmin (admin.ModelAdmin):
 
 
 admin.site.register(Date)
-admin.site.register(Person)
+admin.site.register(Person, PersonAdmin)
 admin.site.register(PropertyAssertion, PropertyAssertionAdmin)
 admin.site.register(Source, SourceAdmin)
 admin.site.register(Text, TextAdmin)
