@@ -4,7 +4,7 @@ from django.db import models
 class Namable (models.Model):
 
     name = models.CharField(max_length=500,
-                            help_text='Separate multiple names with " / "')
+                            help_text='Separate multiple names with ", "')
 
     class Meta:
         abstract = True
@@ -16,6 +16,15 @@ class Namable (models.Model):
 class Notable (models.Model):
 
     notes = models.TextField(blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class SortDatable (models.Model):
+
+    sort_date = models.CharField(blank=True, max_length=4,
+                                 help_text='Year used for sorting purposes')
 
     class Meta:
         abstract = True

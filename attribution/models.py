@@ -1,10 +1,10 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from .behaviours import Namable, Notable
+from .behaviours import Namable, Notable, SortDatable
 
 
-class Date (Namable, Notable, models.Model):
+class Date (Namable, Notable, SortDatable, models.Model):
 
     assertion = models.ForeignKey('PropertyAssertion',
                                   related_name='dates')
@@ -16,7 +16,7 @@ class Identifier (Namable, Notable, models.Model):
                                   related_name='identifiers')
 
 
-class Person (Namable, Notable, models.Model):
+class Person (Namable, Notable, SortDatable, models.Model):
 
     date = models.TextField(blank=True)
 
