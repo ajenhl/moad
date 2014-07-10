@@ -3,23 +3,47 @@
 
 {% block title %}{{ block.super }}List of people{% endblock title %}
 
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.css">
+{% endblock css %}
+
 {% block content %}
 <header>
   <h1>People</h1>
 </header>
 
-<form action="" method="get">
-<p>Filter texts by search term: <input name="q" type="search" value="{{ filter }}"></p>
-</form>
-
-<ul>
-  {% for person in people %}
-  <li>
-    <a href="{% url 'person_display' person.pk %}">{{ person }}</a>
-  </li>
-  {% endfor %}
-</ul>
-
-{% show_pagination num_pages current_page query_parameters %}
+<table id="person-table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+      <th scope="col">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for person in people %}
+    <tr>
+      <td>
+        <a href="{% url 'person_display' person.pk %}">{{ person }}</a>
+      </td>
+      <td data-order="{{ person.sort_date }}">{{ person.date }}</td>
+      <td>{{ person.note }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock content %}
+
+{% block end_js %}
+{{ block.super }}
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
+<script>
+$(document).ready(function () {
+  $('#person-table').DataTable();
+});
+</script>
+{% endblock end_js %}

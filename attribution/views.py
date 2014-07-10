@@ -14,23 +14,7 @@ def person_display (request, person_id):
     return render(request, 'attribution/display/person.html', context)
 
 def person_list_display (request):
-    person_list = attribution.models.Person.objects.all()
-    filter_text = request.GET.get('q', '')
-    if filter_text:
-        person_list = person_list.filter(name__icontains=filter_text)
-    paginator = Paginator(person_list, 50)
-    page = request.GET.get('page')
-    query_parameters = request.GET.copy()
-    query_parameters.pop('page', None)
-    try:
-        people = paginator.page(page)
-    except PageNotAnInteger:
-        people = paginator.page(1)
-    except EmptyPage:
-        people = paginator.page(paginator.num_pages)
-    context = {'current_page': people.number, 'filter': filter_text,
-               'num_pages': paginator.num_pages, 'people': people,
-               'query_parameters': query_parameters}
+    context = {'people': attribution.models.Person.objects.all()}
     return render(request, 'attribution/display/person_list.html', context)
 
 def source_display (request, source_id):
