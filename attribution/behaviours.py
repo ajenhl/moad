@@ -23,8 +23,8 @@ class Notable (models.Model):
 
 class SortDatable (models.Model):
 
-    sort_date = models.CharField(blank=True, max_length=4,
-                                 help_text='Year used for sorting purposes')
+    sort_date = models.IntegerField(
+        blank=True, null=True, help_text='Year used for sorting purposes')
 
     class Meta:
         abstract = True
