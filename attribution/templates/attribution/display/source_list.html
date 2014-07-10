@@ -1,25 +1,44 @@
 {% extends "attribution/display/base.html" %}
-{% load pagination_display %}
 
 {% block title %}{{ block.super }}List of sources{% endblock title %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.css">
+{% endblock css %}
 
 {% block content %}
 <header>
   <h1>Sources</h1>
 </header>
 
-<form action="" method="get">
-<p>Filter texts by search term: <input name="q" type="search" value="{{ filter }}"></p>
-</form>
-
-<ul>
-  {% for source in sources %}
-  <li>
-    <a href="{% url 'source_display' source.id %}">{{ source }}</a>
-  </li>
-  {% endfor %}
-</ul>
-
-{% show_pagination num_pages current_page query_parameters %}
+<table id="source-table">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for source in sources %}
+    <tr>
+      <td>{{ source.date }}</td>
+      <td><a href="{% url 'source_display' source.id %}">{{ source }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock content %}
+
+{% block end_js %}
+{{ block.super }}
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
+<script>
+$(document).ready(function () {
+  $('#source-table').DataTable();
+});
+</script>
+{% endblock end_js %}

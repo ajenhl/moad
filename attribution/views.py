@@ -39,23 +39,7 @@ def source_display (request, source_id):
     return render(request, 'attribution/display/source.html', context)
 
 def source_list_display (request):
-    source_list = attribution.models.Source.objects.all()
-    filter_text = request.GET.get('q', '')
-    if filter_text:
-        source_list = source_list.filter(name__icontains=filter_text)
-    paginator = Paginator(source_list, 50)
-    page = request.GET.get('page')
-    query_parameters = request.GET.copy()
-    query_parameters.pop('page', None)
-    try:
-        sources = paginator.page(page)
-    except PageNotAnInteger:
-        sources = paginator.page(1)
-    except EmptyPage:
-        sources = paginator.page(paginator.num_pages)
-    context = {'current_page': sources.number, 'filter': filter_text,
-               'num_pages': paginator.num_pages, 'sources': sources,
-               'query_parameters': query_parameters}
+    context = {'sources': attribution.models.Source.objects.all()}
     return render(request, 'attribution/display/source_list.html', context)
 
 def text_display (request, text_id):
