@@ -64,6 +64,7 @@ class PropertyAssertionAdmin (admin.ModelAdmin):
 
 class SourceAdmin (NamableAdmin, admin.ModelAdmin):
 
+    fields = ('name', 'date', 'abbreviation', 'notes')
     list_display = ('abbreviation', 'name', 'date')
     search_fields = ['name']
 

@@ -27,7 +27,7 @@ class Person (Namable, Notable, SortDatable, models.Model):
         return reverse('person_display', args=[str(self.id)])
 
 
-class Source (models.Model):
+class Source (Notable, models.Model):
 
     name = models.TextField(help_text='Full bibliographic details')
     date = models.CharField(max_length=5, help_text='Format: YYYY. Use the earliest date if there is a range')
