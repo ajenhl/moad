@@ -1,5 +1,5 @@
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, render
+from haystack.views import FacetedSearchView
 
 import attribution.models
 import attribution.utils
@@ -33,23 +33,16 @@ def text_display (request, text_id):
     context = {'text': text, 'assertions': assertions, 'summary': summary}
     return render(request, 'attribution/display/text.html', context)
 
-def text_list_display (request):
-    text_list = attribution.models.Text.objects.select_related('cached_identifier').order_by('cached_identifier__identifier')
-    filter_text = request.GET.get('q', '')
-    if filter_text:
-        text_list = text_list.filter(
-            cached_identifier__identifier__icontains=filter_text)
-    paginator = Paginator(text_list, 50)
-    page = request.GET.get('page')
-    query_parameters = request.GET.copy()
-    query_parameters.pop('page', None)
-    try:
-        texts = paginator.page(page)
-    except PageNotAnInteger:
-        texts = paginator.page(1)
-    except EmptyPage:
-        texts = paginator.page(paginator.num_pages)
-    context = {'current_page': texts.number, 'filter': filter_text,
-               'num_pages': paginator.num_pages, 'texts': texts,
-               'query_parameters': query_parameters}
-    return render(request, 'attribution/display/text_list.html', context)
+
+class TextSearchView (FacetedSearchView):
+
+    def extra_context (self):
+        extra = super(TextSearchView, self).extra_context()
+        query_parameters = self.request.GET.copy()
+        query_parameters.pop('page', None)
+        extra['query_parameters'] = query_parameters
+        full_path = self.request.get_full_path()
+        if '?' not in full_path:
+            full_path += '?'
+        extra['full_path'] = full_path
+        return extra

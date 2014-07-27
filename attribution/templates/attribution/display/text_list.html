@@ -1,5 +1,6 @@
 {% extends "attribution/display/base.html" %}
 {% load pagination_display %}
+{% load facet_display %}
 
 {% block title %}{{ block.super }}List of texts{% endblock title %}
 
@@ -8,18 +9,74 @@
   <h1>Texts</h1>
 </header>
 
-<form action="" method="get">
-<p>Filter texts by search term: <input name="q" type="search" value="{{ filter }}"></p>
-</form>
+<div class="row">
+  <div class="small-4 columns">
+    <form method="get" action=".">
+      <table>
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Search"></td>
+        </tr>
+      </table>
+    </form>
 
-<ul>
-  {% for text in texts %}
-  <li>
-    <a href="{% url 'text_display' text.pk %}">{{ text }}</a>
-  </li>
-  {% endfor %}
-</ul>
+    <h2>Filters</h2>
 
-{% show_pagination num_pages current_page query_parameters %}
+    <dl class="accordion" data-accordion>
+      <dd class="accordion-navigation">
+        <a href="#panel-preferred-date-filter">Preferred date</a>
+        <div class="content" id="panel-preferred-date-filter">
+          <ul>
+            {% for date in facets.fields.preferred_date %}
+            <li>{% render_facet query_parameters "preferred_date_exact" date %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+      <dd class="accordion-navigation">
+        <a href="#panel-date-filter">Date</a>
+        <div class="content" id="panel-date-filter">
+          <ul>
+            {% for date in facets.fields.date %}
+            <li>{% render_facet query_parameters "date_exact" date %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+      <dd class="accordion-navigation">
+        <a href="#panel-source-filter">Source</a>
+        <div class="content" id="panel-source-filter">
+          <ul>
+            {% for source in facets.fields.source %}
+            <li>{% render_source_facet query_parameters "source_exact" source %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+      <dd class="accordion-navigation">
+        <a href="#panel-person-filter">Person</a>
+        <div class="content" id="panel-person-filter">
+          <ul>
+            {% for person in facets.fields.person %}
+            <li>{% render_person_facet query_parameters "person_exact" person %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+    </dl>
+  </div>
 
+  <div class="small-8 columns">
+    {% for result in page.object_list %}
+    <p><a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a></p>
+    {% empty %}
+    <p>No results found.</p>
+    {% endfor %}
+
+    {% with num_pages=page.paginator.num_pages current_page=page.number %}
+    {% show_pagination num_pages current_page query_parameters %}
+    {% endwith %}
+  </div>
+</div>
 {% endblock content %}

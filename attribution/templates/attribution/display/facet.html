@@ -1,0 +1,2 @@
+{% load staticfiles %}
+{% if add_facet_url %}<a href="{{ add_facet_url }}" title="Filter on this facet">{% endif %}{{ facet_display_name }}{% if add_facet_url %}</a>{% endif %} ({{ facet_count }}) {% if view %}<a href="{% url view facet_name %}" title="View entity"><img src="{% static 'images/link_icon.png' %}"></a>{% endif %} {% if remove_facet_url %}<a href="{{ remove_facet_url }}" title="Remove facet filter">x</a>{% endif %}

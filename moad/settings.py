@@ -38,6 +38,7 @@ THIRD_PARTY_APPS = (
     'south',
     'grappelli',
     'django.contrib.admin',
+    'haystack',
 )
 
 LOCAL_APPS = (
@@ -101,6 +102,15 @@ STATICFILES_DIRS = (
 
 # Grappelli Settings.
 GRAPPELLI_ADMIN_TITLE = 'CBC@'
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # Local settings.
 try:
