@@ -17,6 +17,10 @@
 <p>{{ person.notes }}</p>
 {% endif %}
 
+{% if person.date %}
+<p>Date: {{ person.date }}</p>
+{% endif %}
+
 {% with translations=person.translated.all %}
 {% if translations %}
 <h2>Ascribed Translations</h2>
