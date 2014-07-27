@@ -19,7 +19,7 @@
       </td>
       <td>{{ assertion.is_preferred|yesno:"Yes,No" }}</td>
       <td>{{ assertion.has_other_assertions|yesno:"Yes,No" }}</td>
-      <td>{{ assertion.source }}</td>
+      <td>{% with source=assertion.source %}[<a href="{% url 'source_display' source.pk %}">{{ source.abbreviation }}</a>] {{ source }} {% endwith %}</td>
     </tr>
     {% endfor %}
   </tbody>
