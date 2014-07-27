@@ -1,8 +1,7 @@
 {% if people %}
 <li>{{ title }}:
   {% for person in people %}
-  <a href="{% url 'person_display' person.pk %}">{{ person }}</a>
-  {% if not forloop.last %}; {% endif %}
+  <a href="{% url 'person_display' person.pk %}">{{ person }}</a>{% if not forloop.last %}; {% endif %}
   {% endfor %}
 </li>
 {% endif %}
