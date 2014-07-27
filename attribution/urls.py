@@ -8,6 +8,8 @@ from .views import TextSearchView
 
 urlpatterns = patterns('attribution.views',
     url(r'^$', 'home_display', name='home_display'),
+    url(r'^date/$', 'date_list_display', name='date_list_display'),
+    url(r'^date/(?P<date>-?\d+)/$', 'date_display', name='date_display'),
     url(r'^person/$', 'person_list_display', name='person_list_display'),
     url(r'^person/(?P<person_id>\d+)/$', 'person_display',
         name='person_display'),

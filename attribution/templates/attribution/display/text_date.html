@@ -1,0 +1,8 @@
+{% if dates %}
+<li>{{ title }}:
+  {% for date in dates %}
+  {% if date.notes %}<span data-tooltip class="has-tip radius" title="{{ date.notes }}">{% endif %}{% if link and date.sort_date %}<a href="{% url 'date_display' date.sort_date %}">{% endif %}{{ date }}{% if link and date.sort_date %}</a>{% endif %}{% if date.notes %}</span>{% endif %}
+  {% if not forloop.last %}; {% endif %}
+  {% endfor %}
+</li>
+{% endif %}

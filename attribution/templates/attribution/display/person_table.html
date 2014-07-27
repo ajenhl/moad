@@ -1,0 +1,20 @@
+<table id="person-table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+      <th scope="col">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for person in people %}
+    <tr>
+      <td>
+        <a href="{% url 'person_display' person.pk %}">{{ person }}</a>
+      </td>
+      <td data-order="{{ person.sort_date }}">{{ person.date }}</td>
+      <td>{{ person.note }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

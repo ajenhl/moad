@@ -18,7 +18,7 @@
 {% endif %}
 
 {% if person.date %}
-<p>Date: {{ person.date }}</p>
+<p>Date: {% if person.sort_date %}<a href="{% url 'date_display' person.sort_date %}">{% endif %}{{ person.date }}{% if person.sort_date %}</a>{% endif %}</p>
 {% endif %}
 
 {% with translations=person.translated.all %}

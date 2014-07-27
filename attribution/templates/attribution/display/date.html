@@ -1,0 +1,77 @@
+{% extends "attribution/display/base.html" %}
+
+{% block title %}{{ block.super }}Date: {{ date }}{% endblock title %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.css">
+{% endblock css %}
+
+{% block content %}
+<header>
+  <h1>Date: {{ date }}</h1>
+</header>
+
+<ul class="tabs" data-tab>
+  <li class="tab-title active"><a href="#panel-texts">Texts</a></li>
+  <li class="tab-title"><a href="#panel-people">People</a></li>
+</ul>
+<div class="tabs-content">
+  <div class="content active" id="panel-texts">
+    <table id="text-table">
+      <thead>
+        <tr>
+          <th scope="col">Text</th>
+          <th scope="col">Assertion</th>
+          <th scope="source">Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for assertion in assertions %}
+        <tr>
+          <td>
+            <ul class="no-bullet">
+              {% for text in assertion.texts.all %}
+              <a href="{% url 'text_display' text.pk %}">{{ text }}</a>
+              {% endfor %}
+            </ul>
+          </td>
+          <td>
+            <ul class="no-bullet">
+              {% include "attribution/display/text_property.html" with title="Title" properties=assertion.titles.all %}
+
+              {% include "attribution/display/text_person.html" with title="Author" people=assertion.authors.all %}
+
+              {% include "attribution/display/text_person.html" with title="Translator" people=assertion.translators.all %}
+
+              {% include "attribution/display/text_date.html" with title="Date" dates=assertion.dates.all link=False %}
+
+              {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
+            </ul>
+          </td>
+          <td>
+            <p>{{ assertion.source }}{% if assertion.source_detail %} &#8212; {{ assertion.source_detail }}{% endif %}</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="content" id="panel-people">
+    {% include 'attribution/display/person_table.html' %}
+  </div>
+</div>
+{% endblock content %}
+
+{% block end_js %}
+{{ block.super }}
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
+<script>
+$(document).ready(function () {
+  $('#person-table').DataTable();
+  $('#text-table').DataTable();
+});
+</script>
+{% endblock end_js %}

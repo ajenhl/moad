@@ -62,7 +62,7 @@
 
           {% include "attribution/display/text_person.html" with title="Translator" people=assertion.translators.all %}
 
-          {% include "attribution/display/text_property.html" with title="Date" properties=assertion.dates.all %}
+          {% include "attribution/display/text_date.html" with title="Date" dates=assertion.dates.all link=True %}
 
           {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
 

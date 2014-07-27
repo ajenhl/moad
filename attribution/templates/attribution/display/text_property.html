@@ -1,8 +1,5 @@
 {% if properties %}
 <li>{{ title }}:
-  {% for property in properties %}
-  {% if property.notes %}<span data-tooltip class="has-tip radius" title="{{ property.notes }}">{% endif %}{{ property }}{% if property.notes %}</span>{% endif %}
-  {% if not forloop.last %}; {% endif %}
-  {% endfor %}
+  {% for property in properties %}{{ property }}{% if not forloop.last %}; {% endif %}{% endfor %}
 </li>
 {% endif %}
