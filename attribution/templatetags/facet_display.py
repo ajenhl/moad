@@ -28,16 +28,18 @@ def _render_facet (query_parameters, facet_field, facet_name,
     return data
 
 @register.inclusion_tag('attribution/display/facet.html')
-def render_facet (query_parameters, facet_field, facet):
-    """Renders a facet display template with links to add and remove the
-    specified facet.."""
+def render_date_facet (query_parameters, facet_field, facet):
+    """Renders a facet display template with links to add, remove, and
+    view the specified date facet."""
     facet_name, facet_count = facet
     return _render_facet(query_parameters, facet_field, facet_name,
-                         facet_name, facet_count)
+                         facet_name, facet_count, 'date_display')
 
 
 @register.inclusion_tag('attribution/display/facet.html')
 def render_person_facet (query_parameters, facet_field, facet):
+    """Renders a facet display template with links to add, remove, and
+    view the specified person facet."""
     facet_name, facet_count = facet
     person = Person.objects.get(pk=int(facet_name))
     return _render_facet(query_parameters, facet_field, facet_name,
@@ -45,6 +47,8 @@ def render_person_facet (query_parameters, facet_field, facet):
 
 @register.inclusion_tag('attribution/display/facet.html')
 def render_source_facet (query_parameters, facet_field, facet):
+    """Renders a facet display template with links to add, remove, and
+    view the specified source facet."""
     facet_name, facet_count = facet
     source = Source.objects.get(pk=int(facet_name))
     return _render_facet(query_parameters, facet_field, facet_name,
