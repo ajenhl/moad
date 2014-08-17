@@ -2,10 +2,18 @@ from django import forms
 from haystack.forms import FacetedSearchForm
 
 
+RESULTS_PER_PAGE = 20
+RESULTS_PER_PAGE_CHOICES = (
+    (20, '20'), (50, '50'), (100, '100'), (500, '500'), (1000, '1000'))
+
+
 class TextSearchForm (FacetedSearchForm):
 
     start_date = forms.IntegerField(required=False)
     end_date = forms.IntegerField(required=False)
+    results_per_page = forms.TypedChoiceField(
+        choices=RESULTS_PER_PAGE_CHOICES, coerce=int,
+        empty_value=RESULTS_PER_PAGE, initial=RESULTS_PER_PAGE)
 
     def no_query_found (self):
         return self.searchqueryset.all()

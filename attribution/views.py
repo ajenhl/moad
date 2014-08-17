@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import get_object_or_404, render
 from haystack.views import FacetedSearchView
 
+from attribution.forms import RESULTS_PER_PAGE
 from attribution.models import Date, Person, PropertyAssertion, Source, Text
 import attribution.utils
 
@@ -53,6 +54,15 @@ def text_display (request, text_id):
 
 
 class TextSearchView (FacetedSearchView):
+
+    def build_page (self):
+        # Allow for the number of results per page to be set
+        # dynamically.
+        if self.form.is_valid():
+            self.results_per_page = self.form.cleaned_data['results_per_page']
+        else:
+            self.results_per_page = RESULTS_PER_PAGE
+        return super(TextSearchView, self).build_page()
 
     def extra_context (self):
         extra = super(TextSearchView, self).extra_context()
