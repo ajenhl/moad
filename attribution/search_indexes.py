@@ -7,6 +7,8 @@ from .search_fields import IntegerMultiValueField, FacetIntegerMultiValueField
 class TextIndex (indexes.SearchIndex, indexes.Indexable):
 
     text = indexes.CharField(document=True, use_template=True)
+    identifier = indexes.CharField(indexed=False,
+                                   model_attr='cached_identifier')
     date = IntegerMultiValueField(
         faceted=True, facet_class=FacetIntegerMultiValueField,
         model_attr='get_dates', null=True)

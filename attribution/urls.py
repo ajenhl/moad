@@ -22,7 +22,7 @@ urlpatterns = patterns('attribution.views',
 # Search.
 
 sqs = SearchQuerySet().facet('date').facet('person').facet('source').facet(
-    'preferred_date')
+    'preferred_date').order_by('identifier')
 
 urlpatterns += patterns('attribution.views',
     url(r'^text/$', search_view_factory(

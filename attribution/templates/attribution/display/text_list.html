@@ -69,7 +69,7 @@
 
   <div class="small-8 columns">
     {% for result in page.object_list %}
-    <p><a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a></p>
+    <p><a href="{{ result.object.get_absolute_url }}">{{ result.identifier }}</a></p>
     {% empty %}
     <p>No results found.</p>
     {% endfor %}
