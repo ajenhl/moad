@@ -26,6 +26,11 @@ class TitleInline (admin.TabularInline):
     model = Title
 
 
+class DateAdmin (admin.ModelAdmin):
+
+    list_display = ('name', 'sort_date', 'notes')
+
+
 class PersonAdmin (admin.ModelAdmin):
 
     list_display = ('name', 'date', 'sort_date')
@@ -80,7 +85,7 @@ class TextAdmin (admin.ModelAdmin):
     regenerate_identifier.short_description = 'Update the generated identifier for the selected texts'
 
 
-admin.site.register(Date)
+admin.site.register(Date, DateAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(PropertyAssertion, PropertyAssertionAdmin)
 admin.site.register(Source, SourceAdmin)
