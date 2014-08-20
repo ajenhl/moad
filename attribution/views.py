@@ -42,7 +42,8 @@ def source_display (request, source_id):
     return render(request, 'attribution/display/source.html', context)
 
 def source_list_display (request):
-    context = {'sources': Source.objects.all()}
+    context = {'sources': Source.objects.annotate(
+        num_assertions=models.Count('assertions'))}
     return render(request, 'attribution/display/source_list.html', context)
 
 def text_display (request, text_id):

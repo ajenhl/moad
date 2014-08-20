@@ -18,6 +18,7 @@
     <tr>
       <th scope="col">Date</th>
       <th scope="col">Source</th>
+      <th scope="col">Number of Assertions</th>
     </tr>
   </thead>
   <tbody>
@@ -25,6 +26,7 @@
     <tr>
       <td>{{ source.date }}</td>
       <td><a href="{% url 'source_display' source.id %}">{{ source }}</a></td>
+      <td>{{ source.num_assertions }}</td>
     </tr>
     {% endfor %}
   </tbody>
