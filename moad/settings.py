@@ -100,9 +100,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'moad/static'),
 )
 
-# Grappelli Settings.
+# Grappelli settings.
 GRAPPELLI_ADMIN_TITLE = 'CBC@'
 
+# Haystack search settings.
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
