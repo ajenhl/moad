@@ -1,5 +1,5 @@
 {% if properties %}
-<li>{{ title }}:
+<li><span class="assertion-property-title">{{ title }}:</span>
   {% for property in properties %}{{ property }}{% if not forloop.last %}; {% endif %}{% endfor %}
 </li>
 {% endif %}

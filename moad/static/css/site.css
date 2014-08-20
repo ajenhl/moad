@@ -7,3 +7,7 @@ footer {
 td {
     vertical-align: top;
 }
+
+.assertion-property-title {
+    font-weight: bolder;
+}

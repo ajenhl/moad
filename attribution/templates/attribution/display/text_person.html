@@ -1,5 +1,5 @@
 {% if people %}
-<li>{{ title }}:
+<li><span class="assertion-property-title">{{ title }}:</span>
   {% for person in people %}
   <a href="{% url 'person_display' person.pk %}">{{ person }}</a>{% if not forloop.last %}; {% endif %}
   {% endfor %}

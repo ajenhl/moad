@@ -68,7 +68,7 @@
 
           {% with texts=assertion.texts.all %}
           {% if texts|length > 1 %}
-          <li>Other texts:
+          <li><span class="assertion-property-title">Other texts:</span>
             <ul class="no-bullet">
               {% for other_text in texts %}
               {% if other_text != text %}
