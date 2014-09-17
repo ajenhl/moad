@@ -31,7 +31,7 @@ class DateAdmin (admin.ModelAdmin):
     list_display = ('name', 'sort_date', 'notes')
 
 
-class PersonAdmin (admin.ModelAdmin):
+class PersonAdmin (NamableAdmin, admin.ModelAdmin):
 
     list_display = ('name', 'date', 'sort_date')
 
