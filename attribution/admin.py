@@ -41,7 +41,8 @@ class PropertyAssertionAdmin (admin.ModelAdmin):
     list_display = ('source_abbreviation', 'argument', 'is_preferred')
     list_display_links = ('source_abbreviation', 'argument')
     list_filter = ('is_preferred',)
-    search_fields = ('source__name', 'argument')
+    search_fields = ('source__name', 'argument',
+                     'texts__cached_identifier__identifier')
     fieldsets = (
         (None, {'fields': ('texts',)}),
         ('People', {'fields': ('authors', 'translators')}),
