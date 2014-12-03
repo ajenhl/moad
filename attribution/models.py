@@ -60,6 +60,9 @@ class TextIdentifierCache (models.Model):
 
 class Text (models.Model):
 
+    class Meta:
+        ordering = ['cached_identifier__identifier']
+
     def get_absolute_url (self):
         return reverse('text_display', args=[str(self.id)])
 
