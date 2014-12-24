@@ -21,24 +21,11 @@
 <p>Date: {% if person.sort_date %}<a href="{% url 'date_display' person.sort_date %}">{% endif %}{{ person.date }}{% if person.sort_date %}</a>{% endif %}</p>
 {% endif %}
 
-{% with translations=person.translated.all %}
-{% if translations %}
-<h2>Ascribed Translations</h2>
+{% for role, assertions in assertions.items %}
+<h2>Work as {{ role }}</h2>
 
-{% include "attribution/display/person_text.html" with title="Translated text" assertions=translations id="translator-table" %}
-
-{% endif %}
-{% endwith %}
-
-{% with authored=person.authored.all %}
-{% if authored %}
-<h2>Ascribed Writings</h2>
-
-{% include "attribution/display/person_text.html" with title="Authored text" assertions=authored id="author-table" %}
-
-{% endif %}
-{% endwith %}
-
+{% include "attribution/display/person_text.html" with title="Text" assertions=assertions role=role %}
+{% endfor %}
 {% endblock content %}
 
 {% block end_js %}
@@ -47,8 +34,8 @@
 <script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
 <script>
 $(document).ready(function () {
-  $('#translator-table').DataTable();
-  $('#author-table').DataTable();
+{% for role in assertions.keys %}  $('#{{ role }}-table').DataTable();
+{% endfor %}
 });
 </script>
 {% endblock end_js %}

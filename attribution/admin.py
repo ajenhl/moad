@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Date, Identifier, Person, PropertyAssertion, Source, Text, Title
+from .models import Date, Identifier, Person, PersonRole, PropertyAssertion, Source, Text, Title
 
 
 class NamableAdmin ():
@@ -18,6 +18,15 @@ class IdentifierInline (admin.TabularInline):
 
     extra = 1
     model = Identifier
+
+
+class PersonInvolvementInline (admin.TabularInline):
+
+    model = PropertyAssertion.people.through
+    raw_id_fields = ('person',)
+    autocomplete_lookup_fields = {
+        'fk': ['person'],
+    }
 
 
 class TitleInline (admin.TabularInline):
@@ -45,15 +54,16 @@ class PropertyAssertionAdmin (admin.ModelAdmin):
                      'texts__cached_identifier__identifier')
     fieldsets = (
         (None, {'fields': ('texts',)}),
-        ('People', {'fields': ('authors', 'translators')}),
+        (None, {'classes': ('placeholder person_involvements-group',), 'fields': ()}),
         (None, {'classes': ('placeholder titles-group',), 'fields': ()}),
         (None, {'classes': ('placeholder dates-group',), 'fields': ()}),
         (None, {'classes': ('placeholder identifiers-group',), 'fields': ()}),
         ('Source and argument',
          {'fields': ('source', 'source_detail', 'argument', 'is_preferred')}),
     )
-    filter_horizontal = ['authors', 'texts', 'translators']
-    inlines = [DateInline, IdentifierInline, TitleInline]
+    filter_horizontal = ['texts']
+    inlines = [DateInline, IdentifierInline, TitleInline,
+               PersonInvolvementInline]
     raw_id_fields = ('source',)
     autocomplete_lookup_fields = {
         'fk': ['source'],
@@ -88,6 +98,7 @@ class TextAdmin (admin.ModelAdmin):
 
 admin.site.register(Date, DateAdmin)
 admin.site.register(Person, PersonAdmin)
+admin.site.register(PersonRole)
 admin.site.register(PropertyAssertion, PropertyAssertionAdmin)
 admin.site.register(Source, SourceAdmin)
 admin.site.register(Text, TextAdmin)

@@ -15,8 +15,7 @@ class TextIndex (indexes.SearchIndex, indexes.Indexable):
     preferred_date = IntegerMultiValueField(
         faceted=True, model_attr='get_preferred_dates', null=True,
         facet_class=FacetIntegerMultiValueField)
-    person = indexes.MultiValueField(faceted=True, model_attr='get_people',
-                                     null=True)
+    person = indexes.MultiValueField(faceted=True, null=True)
     source = indexes.MultiValueField(faceted=True, model_attr='get_sources',
                                      null=True)
 
@@ -26,3 +25,7 @@ class TextIndex (indexes.SearchIndex, indexes.Indexable):
     def index_queryset (self, using=None):
         """Used when the entire index for model is updated."""
         return self.get_model().objects.all()
+
+    def prepare_person (self, text):
+        people = text.get_people()
+        return [person.id for person in people]

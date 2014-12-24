@@ -29,7 +29,7 @@ def date_list_display (request):
 
 def person_display (request, person_id):
     person = get_object_or_404(Person, pk=person_id)
-    context = {'person': person}
+    context = {'person': person, 'assertions': person.get_assertions()}
     return render(request, 'attribution/display/person.html', context)
 
 def person_list_display (request):

@@ -1,7 +1,9 @@
-{% if people %}
+{% if involvements %}
 <li><span class="assertion-property-title">{{ title }}:</span>
-  {% for person in people %}
-  <a href="{% url 'person_display' person.pk %}">{{ person }}</a>{% if not forloop.last %}; {% endif %}
+  {% for involvement in involvements %}
+  {% with person=involvement.person %}
+  <a href="{% url 'person_display' person.pk %}">{{ person }}</a> ({{ involvement.role }}){% if not forloop.last %}; {% endif %}
+  {% endwith %}
   {% endfor %}
 </li>
 {% endif %}

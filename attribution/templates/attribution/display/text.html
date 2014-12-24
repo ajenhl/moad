@@ -58,9 +58,7 @@
         <ul class="no-bullet">
           {% include "attribution/display/text_property.html" with title="Title" properties=assertion.titles.all %}
 
-          {% include "attribution/display/text_person.html" with title="Author" people=assertion.authors.all %}
-
-          {% include "attribution/display/text_person.html" with title="Translator" people=assertion.translators.all %}
+          {% include "attribution/display/text_person.html" with title="People" involvements=assertion.person_involvements.all %}
 
           {% include "attribution/display/text_date.html" with title="Date" dates=assertion.dates.all link=True %}
 

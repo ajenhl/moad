@@ -1,5 +1,4 @@
 {% for identifier in object.get_identifiers %}{{ identifier }} {% endfor %}
 {% for title in object.get_titles %}{{ title }} {% endfor %}
 {% for assertion in object.assertions.all %}{{ assertion.argument }}{% endfor %}
-{% for author in object.get_authors %}{{ author.name }}{% endfor %}
-{% for translator in object.get_translators %}{{ translator.name }}{% endfor %}
+{% for person in object.get_people %}{{ person.name }}{% endfor %}

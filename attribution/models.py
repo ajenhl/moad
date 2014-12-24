@@ -26,6 +26,28 @@ class Person (Namable, Notable, SortDatable, models.Model):
     def get_absolute_url (self):
         return reverse('person_display', args=[str(self.id)])
 
+    def get_assertions (self):
+        """Returns a dictionary with PersonRole keys and lists of
+        PropertyAssertions values."""
+        typed_assertions = {}
+        for involvement in self.involvements.all():
+            assertions = typed_assertions.setdefault(involvement.role, [])
+            assertions.append(involvement.assertion)
+        return typed_assertions
+
+
+class PersonInvolvement (models.Model):
+
+    person = models.ForeignKey('Person', related_name='involvements')
+    assertion = models.ForeignKey('PropertyAssertion',
+                                  related_name='person_involvements')
+    role = models.ForeignKey('PersonRole', related_name='involvements')
+
+
+class PersonRole (Namable, Notable, models.Model):
+
+    pass
+
 
 class Source (Notable, models.Model):
 
@@ -74,38 +96,32 @@ class Text (models.Model):
         identifier = u'; '.join(identifiers + titles)
         return identifier or u'[No identifier supplied]'
 
-    def get_authors (self):
-        return Person.objects.filter(authored__texts=self)
-
-    def get_authorship_dates (self):
-        """Returns a list of all author sort dates associated with this
+    def get_person_dates (self):
+        """Returns a list of all person sort dates associated with this
         Text."""
-        authors = self.get_authors()
-        return list(authors.values_list('sort_date', flat=True))
+        people = self.get_people()
+        return list(people.values_list('sort_date', flat=True))
 
     def get_dates (self):
         """Returns a list of all sort dates associated with this Text."""
-        return list(set(self.get_authorship_dates() +
-                        self.get_translation_dates() +
-                        self.get_text_dates()))
+        return list(set(self.get_person_dates() + self.get_text_dates()))
 
     def get_identifiers (self):
         """Returns a list of all identifiers associated with this Text."""
         identifiers = Identifier.objects.filter(assertion__texts=self)
-        return list(identifiers.values_list('name', flat=True))
+        return list(identifiers.values_list('name', flat=True).distinct())
 
     def get_people (self):
-        """Returns a list of all people associated with this Text."""
-        return list(self.get_authors().values_list('id', flat=True)) + \
-            list(self.get_translators().values_list('id', flat=True))
+        """Returns a QuerySet of all people associated with this Text."""
+        return Person.objects.filter(involvements__assertion__texts=self)
 
     def get_preferred_dates (self):
         """Returns the preferred dates associated with this Text.
 
         These dates are drawn from the assertion directly, and from
-        translators and authors. Where the same assertion specifies
-        both a date and a dated person, the date is used and not the
-        person's date.
+        the people involved in the assertion. Where the same assertion
+        specifies both a date and a dated person, the date is used and
+        not the person's date.
 
         """
         dates = []
@@ -120,8 +136,7 @@ class Text (models.Model):
             try:
                 assertion = assertions.filter(
                     models.Q(dates__sort_date__isnull=False) |
-                    models.Q(authors__sort_date__isnull=False) |
-                    models.Q(translators__sort_date__isnull=False))[0]
+                    models.Q(person_involvements__person__sort_date__isnull=False))[0]
                 dates.extend(assertion.get_preferred_dates())
             except IndexError:
                 pass
@@ -133,24 +148,15 @@ class Text (models.Model):
         return list(sources.values_list('id', flat=True))
 
     def get_text_dates (self):
-        """Returns a list of all non-author, non-translator sort dates
-        associated with this Text."""
+        """Returns a list of all non-person sort dates associated with this
+        Text."""
         dates = Date.objects.filter(assertion__texts=self)
         return list(dates.values_list('sort_date', flat=True))
 
     def get_titles (self):
         """Returns a list of all titles associated with this Text."""
         titles = Title.objects.filter(assertion__texts=self)
-        return list(titles.values_list('name', flat=True))
-
-    def get_translators (self):
-        return Person.objects.filter(translated__texts=self)
-
-    def get_translation_dates (self):
-        """"Returns a list of all translator sort dates associated with this
-        Text."""
-        translators = self.get_translators()
-        return list(translators.values_list('sort_date', flat=True))
+        return list(titles.values_list('name', flat=True).distinct())
 
     def save (self, *args, **kwargs):
         super(Text, self).save(*args, **kwargs)
@@ -179,6 +185,8 @@ class Title (Namable, models.Model):
 class PropertyAssertion (models.Model):
 
     texts = models.ManyToManyField(Text, related_name='assertions')
+    people = models.ManyToManyField(Person, blank=True, null=True,
+                                    through=PersonInvolvement)
     authors = models.ManyToManyField(Person, blank=True, null=True,
                                      related_name='authored')
     translators = models.ManyToManyField(Person, blank=True, null=True,
@@ -212,12 +220,9 @@ class PropertyAssertion (models.Model):
         dates = [date.sort_date for date in new_dates if date]
         if not dates:
             # In the absence of direct dates, use dates associated
-            # with the translators and authors.
-            author_dates = self.authors.values_list('sort_date', flat=True)
-            translator_dates = self.translators.values_list(
-                'sort_date', flat=True)
-            sort_dates = list(author_dates) + list(translator_dates)
-            dates = [sort_date for sort_date in sort_dates if sort_date]
+            # with the people involved.
+            person_dates = Person.objects.filter(involvements__assertion=self).values_list('sort_date', flat=True)
+            dates = [date for date in list(person_dates) if date]
         return dates
 
     def has_other_assertions (self):
