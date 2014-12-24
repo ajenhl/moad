@@ -1,3 +1,6 @@
+from attribution.models import PersonRole
+
+
 def _assemble_preferred_assertion_data (assertion, property_name):
     data = None
     if assertion is not None:
@@ -5,6 +8,23 @@ def _assemble_preferred_assertion_data (assertion, property_name):
                            in getattr(assertion, property_name).all()])
         data = {'value': value, 'id': assertion.pk,
                 'source': assertion.source.abbreviation}
+    return data
+
+def _get_person_summary_data (assertions):
+    data = {}
+    for role in PersonRole.objects.all():
+        all_assertions = assertions.filter(person_involvements__role=role)
+        preferred_assertions = all_assertions.filter(is_preferred=True)
+        if preferred_assertions:
+            assertion = preferred_assertions[0]
+        elif all_assertions:
+            assertion = all_assertions[0]
+        else:
+            continue
+        value = '; '.join([unicode(person) for person in
+                           assertion.people.filter(involvements__role=role)])
+        data[role] = {'value': value, 'id': assertion.pk,
+                      'source': assertion.source.abbreviation}
     return data
 
 def _get_preferred_assertion (assertions, property_name):
@@ -25,10 +45,9 @@ def _get_summary_data (assertions, property_name):
 
 def get_text_summary (assertions):
     data = {
-        'author': _get_summary_data(assertions, 'authors'),
         'date': _get_summary_data(assertions, 'dates'),
         'identifier': _get_summary_data(assertions, 'identifiers'),
+        'people': _get_person_summary_data(assertions),
         'title': _get_summary_data(assertions, 'titles'),
-        'translator': _get_summary_data(assertions, 'translators'),
     }
     return data

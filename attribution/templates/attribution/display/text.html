@@ -20,16 +20,15 @@
       <td>{% include "attribution/display/text_summary.html" with data=summary.title %}</td>
     </tr>
     <tr>
-      <td>Author</td>
-      <td>{% include "attribution/display/text_summary.html" with data=summary.author %}</td>
-    </tr>
-    <tr>
-      <td>Translator</td>
-      <td>{% include "attribution/display/text_summary.html" with data=summary.translator %}</td>
-    <tr>
       <td>Date</td>
       <td>{% include "attribution/display/text_summary.html" with data=summary.date %}</td>
     </tr>
+    {% for role, data in summary.people.items %}
+    <tr>
+      <td>{{ role|capfirst }}</td>
+      <td>{% include "attribution/display/text_summary.html" with data=data %}</td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 
