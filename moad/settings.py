@@ -111,7 +111,10 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# Do not use RealtimeSignalProcessor because it causes failures with
+# adding a Text, since the index is run when the Text is saved but
+# before it has a cached identifier, leading to an error.
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.BaseSignalProcessor'
 
 # Local settings.
 try:
