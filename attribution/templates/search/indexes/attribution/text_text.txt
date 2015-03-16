@@ -1,4 +1,16 @@
+{% load search_index %}
+
 {% for identifier in object.get_identifiers %}{{ identifier }} {% endfor %}
-{% for title in object.get_titles %}{{ title }} {% endfor %}
-{% for assertion in object.assertions.all %}{{ assertion.argument }}{% endfor %}
-{% for person in object.get_people %}{{ person.name }}{% endfor %}
+{% for title in object.get_titles %}
+  {{ title }} {{ title|remove_combining }}
+{% endfor %}
+{% for assertion in object.assertions.all %}
+  {% with argument=assertion.argument %}
+    {{ argument }} {{ argument|remove_combining }}
+  {% endwith %}
+{% endfor %}
+{% for person in object.get_people %}
+  {% with name=person.name %}
+    {{ name }} {{ name|remove_combining }}
+  {% endwith %}
+{% endfor %}
