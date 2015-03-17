@@ -1,9 +1,11 @@
+{% load search_index %}
 <table id="person-table">
   <thead>
     <tr>
       <th scope="col">Name</th>
       <th scope="col">Date</th>
       <th scope="col">Notes</th>
+      <th scope="col" style="display: none;">Search</th>
     </tr>
   </thead>
   <tbody>
@@ -14,6 +16,7 @@
       </td>
       <td data-order="{{ person.sort_date }}">{{ person.date }}</td>
       <td>{{ person.note }}</td>
+      <td style="display: none;">{{ person.name|remove_combining }} {{ person.note|remove_combining }}</td>
     </tr>
     {% endfor %}
   </tbody>

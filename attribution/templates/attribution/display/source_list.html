@@ -1,4 +1,5 @@
 {% extends "attribution/display/base.html" %}
+{% load search_index %}
 
 {% block title %}{{ block.super }}List of sources{% endblock title %}
 
@@ -19,6 +20,7 @@
       <th scope="col">Date</th>
       <th scope="col">Source</th>
       <th scope="col">Number of Assertions</th>
+      <th scope="col" style="display: none;">Search</th>
     </tr>
   </thead>
   <tbody>
@@ -27,6 +29,7 @@
       <td>{{ source.date }}</td>
       <td><a href="{% url 'source_display' source.id %}">{{ source }}</a></td>
       <td>{{ source.num_assertions }}</td>
+      <td style="display: none;">{{ source.name|remove_combining }}</td>
     </tr>
     {% endfor %}
   </tbody>
