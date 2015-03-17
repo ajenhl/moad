@@ -15,8 +15,8 @@
         <a href="{% url 'person_display' person.pk %}">{{ person }}</a>
       </td>
       <td data-order="{{ person.sort_date }}">{{ person.date }}</td>
-      <td>{{ person.note }}</td>
-      <td style="display: none;">{{ person.name|remove_combining }} {{ person.note|remove_combining }}</td>
+      <td>{{ person.notes }}</td>
+      <td style="display: none;">{{ person.name|remove_combining }} {{ person.notes|remove_combining }}</td>
     </tr>
     {% endfor %}
   </tbody>
