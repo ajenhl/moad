@@ -39,6 +39,7 @@ THIRD_PARTY_APPS = (
     'grappelli',
     'django.contrib.admin',
     'haystack',
+    'ddh_utils',
 )
 
 LOCAL_APPS = (
@@ -69,7 +70,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'moad/templates')
+    os.path.join(BASE_DIR, 'moad/templates'),
 )
 
 ROOT_URLCONF = 'moad.urls'

@@ -1,5 +1,5 @@
 {% extends "attribution/display/base.html" %}
-{% load pagination_display %}
+{% load ddh_utils_tags %}
 {% load facet_display %}
 
 {% block title %}{{ block.super }}List of texts{% endblock title %}
@@ -29,7 +29,7 @@
         <div class="content" id="panel-preferred-date-filter">
           <ul>
             {% for date in facets.fields.preferred_date %}
-            <li>{% render_date_facet query_parameters "preferred_date_exact" date %}</li>
+            <li>{% render_date_facet querydict "preferred_date_exact" date %}</li>
             {% endfor %}
           </ul>
         </div>
@@ -39,7 +39,7 @@
         <div class="content" id="panel-date-filter">
           <ul>
             {% for date in facets.fields.date %}
-            <li>{% render_date_facet query_parameters "date_exact" date %}</li>
+            <li>{% render_date_facet querydict "date_exact" date %}</li>
             {% endfor %}
           </ul>
         </div>
@@ -49,7 +49,7 @@
         <div class="content" id="panel-source-filter">
           <ul>
             {% for source in facets.fields.source %}
-            <li>{% render_source_facet query_parameters "source_exact" source %}</li>
+            <li>{% render_source_facet querydict "source_exact" source %}</li>
             {% endfor %}
           </ul>
         </div>
@@ -59,7 +59,7 @@
         <div class="content" id="panel-person-filter">
           <ul>
             {% for person in facets.fields.person %}
-            <li>{% render_person_facet query_parameters "person_exact" person %}</li>
+            <li>{% render_person_facet querydict "person_exact" person %}</li>
             {% endfor %}
           </ul>
         </div>
@@ -74,9 +74,7 @@
     <p>No results found.</p>
     {% endfor %}
 
-    {% with num_pages=page.paginator.num_pages current_page=page.number %}
-    {% show_pagination num_pages current_page query_parameters %}
-    {% endwith %}
+    {% display_pagination querydict page %}
   </div>
 </div>
 {% endblock content %}

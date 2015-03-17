@@ -1,6 +1,7 @@
 from django.db import models
 from django.shortcuts import get_object_or_404, render
-from haystack.views import FacetedSearchView
+
+from ddh_utils.views import FacetedSearchView
 
 from attribution.forms import RESULTS_PER_PAGE
 from attribution.models import Date, Person, PropertyAssertion, Source, Text
@@ -64,14 +65,3 @@ class TextSearchView (FacetedSearchView):
         else:
             self.results_per_page = RESULTS_PER_PAGE
         return super(TextSearchView, self).build_page()
-
-    def extra_context (self):
-        extra = super(TextSearchView, self).extra_context()
-        query_parameters = self.request.GET.copy()
-        query_parameters.pop('page', None)
-        extra['query_parameters'] = query_parameters
-        full_path = self.request.get_full_path()
-        if '?' not in full_path:
-            full_path += '?'
-        extra['full_path'] = full_path
-        return extra
