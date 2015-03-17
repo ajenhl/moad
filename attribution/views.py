@@ -15,8 +15,7 @@ def date_display (request, date):
     people = Person.objects.filter(sort_date=date)
     assertions = PropertyAssertion.objects.filter(
         models.Q(dates__sort_date=date) |
-        models.Q(authors__sort_date=date) |
-        models.Q(translators__sort_date=date))
+        models.Q(people__sort_date=date))
     context = {'date': date, 'people': people, 'assertions': assertions}
     return render(request, 'attribution/display/date.html', context)
 
