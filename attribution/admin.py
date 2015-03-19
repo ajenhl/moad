@@ -43,6 +43,9 @@ class DateAdmin (admin.ModelAdmin):
 class PersonAdmin (NamableAdmin, admin.ModelAdmin):
 
     list_display = ('name', 'date', 'sort_date')
+    fieldsets = (
+        (None, {'fields': ('name', 'date', 'sort_date', 'notes')}),
+    )
 
 
 class PropertyAssertionAdmin (admin.ModelAdmin):
