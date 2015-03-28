@@ -1,0 +1,5 @@
+{% load search_index %}
+
+{{ object.name }} {{ object.name|remove_combining }}
+{{ object.date }}
+{{ object.abbreviation }}

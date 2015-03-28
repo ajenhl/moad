@@ -1,0 +1,11 @@
+{% load search_index %}
+
+{{ object.argument }} {{ object.argument|remove_combining }}
+{% with name=object.source.name %}
+{{ name }} {{ name|remove_combining }}
+{% endwith %}
+{% for text in object.texts.all %}
+{% with identifier=text.cached_identifier.identifier %}
+{{ identifier }} {{ identifier|remove_combining }}
+{% endwith %}
+{% endfor %}

@@ -1,7 +1,33 @@
 from haystack import indexes
 
-from .models import Text
+from .models import Person, PropertyAssertion, Source, Text
 from .search_fields import IntegerMultiValueField, FacetIntegerMultiValueField
+
+
+class PersonIndex (indexes.SearchIndex, indexes.Indexable):
+
+    text = indexes.CharField(document=True, use_template=True)
+    date = indexes.IntegerField(faceted=True, model_attr='sort_date', null=True)
+
+    def get_model (self):
+        return Person
+
+
+class PropertyAssertionIndex (indexes.SearchIndex, indexes.Indexable):
+
+    text = indexes.CharField(document=True, use_template=True)
+
+    def get_model (self):
+        return PropertyAssertion
+
+
+class SourceIndex (indexes.SearchIndex, indexes.Indexable):
+
+    text = indexes.CharField(document=True, use_template=True)
+    date = indexes.IntegerField(faceted=True, null=True)
+
+    def get_model (self):
+        return Source
 
 
 class TextIndex (indexes.SearchIndex, indexes.Indexable):

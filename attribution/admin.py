@@ -1,11 +1,8 @@
 from django.contrib import admin
 
+from haystack.admin import SearchModelAdmin
+
 from .models import Date, Identifier, Person, PersonRole, PropertyAssertion, Source, Text, Title
-
-
-class NamableAdmin ():
-
-    search_fields = ['name']
 
 
 class DateInline (admin.TabularInline):
@@ -40,7 +37,7 @@ class DateAdmin (admin.ModelAdmin):
     list_display = ('name', 'sort_date', 'notes')
 
 
-class PersonAdmin (NamableAdmin, admin.ModelAdmin):
+class PersonAdmin (SearchModelAdmin):
 
     list_display = ('name', 'date', 'sort_date')
     fieldsets = (
@@ -48,13 +45,12 @@ class PersonAdmin (NamableAdmin, admin.ModelAdmin):
     )
 
 
-class PropertyAssertionAdmin (admin.ModelAdmin):
+class PropertyAssertionAdmin (SearchModelAdmin):
 
     list_display = ('source_abbreviation', 'argument', 'is_preferred')
     list_display_links = ('source_abbreviation', 'argument')
     list_filter = ('is_preferred',)
-    search_fields = ('source__name', 'argument',
-                     'texts__cached_identifier__identifier')
+    search_fields = ('argument',)
     fieldsets = (
         (None, {'fields': ('texts',)}),
         (None, {'classes': ('placeholder person_involvements-group',), 'fields': ()}),
@@ -81,14 +77,15 @@ class PropertyAssertionAdmin (admin.ModelAdmin):
     def source_abbreviation (self, obj):
         return obj.source.abbreviation
 
-class SourceAdmin (NamableAdmin, admin.ModelAdmin):
+
+class SourceAdmin (SearchModelAdmin):
 
     fields = ('name', 'date', 'abbreviation', 'notes')
     list_display = ('abbreviation', 'name', 'date')
     search_fields = ['name']
 
 
-class TextAdmin (admin.ModelAdmin):
+class TextAdmin (SearchModelAdmin):
 
     actions = ['regenerate_identifier']
     search_fields = ('cached_identifier__identifier',)
