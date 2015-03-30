@@ -3,6 +3,7 @@ from haystack.query import SearchQuerySet
 from haystack.views import search_view_factory
 
 from .forms import TextSearchForm
+from .models import Text
 from .views import TextSearchView
 
 
@@ -21,12 +22,12 @@ urlpatterns = patterns('attribution.views',
 
 # Search.
 
-sqs = SearchQuerySet().facet('date').facet('person').facet('source').facet(
+text_sqs = SearchQuerySet().models(Text).facet('date').facet('person').facet('source').facet(
     'preferred_date').order_by('identifier')
 
 urlpatterns += patterns('attribution.views',
     url(r'^text/$', search_view_factory(
         form_class=TextSearchForm, view_class=TextSearchView,
-        searchqueryset=sqs,
+        searchqueryset=text_sqs,
         template='attribution/display/text_list.html'), name='text_list_display'),
 )
