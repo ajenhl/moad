@@ -1,16 +1,31 @@
 from haystack import indexes
 
-from .models import Person, PropertyAssertion, Source, Text
+from .models import Person, PersonRole, PropertyAssertion, Source, Text
 from .search_fields import IntegerMultiValueField, FacetIntegerMultiValueField
 
 
 class PersonIndex (indexes.SearchIndex, indexes.Indexable):
 
     text = indexes.CharField(document=True, use_template=True)
-    date = indexes.IntegerField(faceted=True, model_attr='sort_date', null=True)
+    full_date = indexes.CharField(indexed=False, model_attr='date')
+    date = indexes.IntegerField(faceted=True, model_attr='sort_date',
+                                null=True)
+    name = indexes.CharField(indexed=False, model_attr='name', null=True)
+    role = indexes.MultiValueField(faceted=True, null=True)
+    source = indexes.MultiValueField(faceted=True, null=True)
+    texts = indexes.MultiValueField(faceted=True, null=True)
 
     def get_model (self):
         return Person
+
+    def prepare_role (self, person):
+        return list(PersonRole.objects.filter(involvements__person=person).distinct().values_list('name', flat=True))
+
+    def prepare_source (self, person):
+        return list(Source.objects.filter(assertions__people=person).distinct().values_list('id', flat=True))
+
+    def prepare_texts (self, person):
+        return list(Text.objects.filter(assertions__people=person).distinct().values_list('id', flat=True))
 
 
 class PropertyAssertionIndex (indexes.SearchIndex, indexes.Indexable):

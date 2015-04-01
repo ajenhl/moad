@@ -12,7 +12,7 @@
     {% for person in people %}
     <tr>
       <td>
-        <a href="{% url 'person_display' person.pk %}">{{ person }}</a>
+        <a href="{% url 'person_display' person.pk %}">{{ person.name }}</a>
       </td>
       <td data-order="{{ person.sort_date }}">{{ person.date }}</td>
       <td>{{ person.notes }}</td>

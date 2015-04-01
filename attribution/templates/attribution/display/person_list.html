@@ -1,28 +1,80 @@
 {% extends "attribution/display/base.html" %}
+{% load ddh_utils_tags %}
+{% load facet_display %}
 
 {% block title %}{{ block.super }}List of people{% endblock title %}
-
-{% block css %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.css">
-{% endblock css %}
 
 {% block content %}
 <header>
   <h1>Persons</h1>
 </header>
 
-{% include 'attribution/display/person_table.html' %}
-{% endblock content %}
+<div class="row">
+  <div class="small-4 columns">
+    <form method="get" action=".">
+      <table>
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Search"></td>
+        </tr>
+      </table>
+    </form>
 
-{% block end_js %}
-{{ block.super }}
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
-<script>
-$(document).ready(function () {
-  $('#person-table').DataTable();
-});
-</script>
-{% endblock end_js %}
+    <h2>Filters</h2>
+
+    <dl class="accordion" data-accordion>
+      <dd class="accordion-navigation">
+        <a href="#panel-date-filter">Date</a>
+        <div class="content" id="panel-date-filter">
+          <ul>
+            {% for date in facets.fields.sort_date %}
+            <li>{% render_date_facet querydict "date_exact" date %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+      <dd class="accordion-navigation">
+        <a href="#panel-role-filter">Role</a>
+        <div class="content" id="panel-role-filter">
+          <ul>
+            {% for role in facets.fields.role %}
+            <li>{% render_unlinked_facet querydict "role_exact" role %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+      <dd class="accordion-navigation">
+        <a href="#panel-source-filter">Source</a>
+        <div class="content" id="panel-source-filter">
+          <ul>
+            {% for source in facets.fields.source %}
+            <li>{% render_source_facet querydict "source_exact" source %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+      <dd class="accordion-navigation">
+        <a href="#panel-text-filter">Text</a>
+        <div class="content" id="panel-text-filter">
+          <ul>
+            {% for text in facets.fields.texts %}
+            <li>{% render_text_facet querydict "text_exact" text %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="small-8 columns">
+    {% for result in page.object_list %}
+    <p><a href="{% url 'person_display' result.pk %}">{{ result.name }}</a>{% if result.full_date %} ({{ result.full_date }}){% endif %}</p>
+    {% empty %}
+    <p>No results found.</p>
+    {% endfor %}
+
+    {% display_pagination querydict page %}
+  </div>
+</div>
+{% endblock content %}

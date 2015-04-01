@@ -32,10 +32,6 @@ def person_display (request, person_id):
     context = {'person': person, 'assertions': person.get_assertions()}
     return render(request, 'attribution/display/person.html', context)
 
-def person_list_display (request):
-    context = {'people': Person.objects.all()}
-    return render(request, 'attribution/display/person_list.html', context)
-
 def source_display (request, source_id):
     source = get_object_or_404(Source, pk=source_id)
     context = {'source': source}
@@ -54,7 +50,7 @@ def text_display (request, text_id):
     return render(request, 'attribution/display/text.html', context)
 
 
-class TextSearchView (FacetedSearchView):
+class ModelSearchView (FacetedSearchView):
 
     def build_page (self):
         # Allow for the number of results per page to be set
@@ -63,4 +59,4 @@ class TextSearchView (FacetedSearchView):
             self.results_per_page = self.form.cleaned_data['results_per_page']
         else:
             self.results_per_page = RESULTS_PER_PAGE
-        return super(TextSearchView, self).build_page()
+        return super(ModelSearchView, self).build_page()

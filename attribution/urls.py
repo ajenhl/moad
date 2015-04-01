@@ -2,16 +2,15 @@ from django.conf.urls import patterns, url
 from haystack.query import SearchQuerySet
 from haystack.views import search_view_factory
 
-from .forms import TextSearchForm
-from .models import Text
-from .views import TextSearchView
+from .forms import ModelSearchForm
+from .models import Person, Text
+from .views import ModelSearchView
 
 
 urlpatterns = patterns('attribution.views',
     url(r'^$', 'home_display', name='home_display'),
     url(r'^date/$', 'date_list_display', name='date_list_display'),
     url(r'^date/(?P<date>-?\d+)/$', 'date_display', name='date_display'),
-    url(r'^person/$', 'person_list_display', name='person_list_display'),
     url(r'^person/(?P<person_id>\d+)/$', 'person_display',
         name='person_display'),
     url(r'^source/$', 'source_list_display', name='source_list_display'),
@@ -22,12 +21,20 @@ urlpatterns = patterns('attribution.views',
 
 # Search.
 
+person_sqs = SearchQuerySet().models(Person).facet('sort_date').facet('source').facet('role').facet('texts').order_by('name')
+
 text_sqs = SearchQuerySet().models(Text).facet('date').facet('person').facet('source').facet(
     'preferred_date').order_by('identifier')
 
 urlpatterns += patterns('attribution.views',
+    url(r'^person/$', search_view_factory(
+        form_class=ModelSearchForm, view_class=ModelSearchView,
+        searchqueryset=person_sqs,
+        template='attribution/display/person_list.html'),
+        name='person_list_display'),
     url(r'^text/$', search_view_factory(
-        form_class=TextSearchForm, view_class=TextSearchView,
+        form_class=ModelSearchForm, view_class=ModelSearchView,
         searchqueryset=text_sqs,
-        template='attribution/display/text_list.html'), name='text_list_display'),
+        template='attribution/display/text_list.html'),
+        name='text_list_display'),
 )

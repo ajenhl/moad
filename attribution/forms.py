@@ -7,7 +7,7 @@ RESULTS_PER_PAGE_CHOICES = (
     (20, '20'), (50, '50'), (100, '100'), (500, '500'), (1000, '1000'))
 
 
-class TextSearchForm (FacetedSearchForm):
+class ModelSearchForm (FacetedSearchForm):
 
     start_date = forms.IntegerField(required=False)
     end_date = forms.IntegerField(required=False)
@@ -19,7 +19,7 @@ class TextSearchForm (FacetedSearchForm):
         return self.searchqueryset.all()
 
     def search (self):
-        sqs = super(TextSearchForm, self).search()
+        sqs = super(ModelSearchForm, self).search()
         if not self.is_valid():
             return self.no_query_found()
         start_date = self.cleaned_data['start_date']

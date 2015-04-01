@@ -1,6 +1,6 @@
 from django import template
 
-from ..models import Person, Source
+from ..models import Person, Source, Text
 
 
 register = template.Library()
@@ -53,3 +53,21 @@ def render_source_facet (query_parameters, facet_field, facet):
     source = Source.objects.get(pk=int(facet_name))
     return _render_facet(query_parameters, facet_field, facet_name,
                          source.abbreviation, facet_count, 'source_display')
+
+@register.inclusion_tag('attribution/display/facet.html')
+def render_text_facet (query_parameters, facet_field, facet):
+    """Renders a facet display template with links to add, remove, and
+    view the specified text facet."""
+    facet_name, facet_count = facet
+    text = Text.objects.get(pk=int(facet_name))
+    return _render_facet(query_parameters, facet_field, facet_name,
+                         unicode(text), facet_count, 'text_display')
+
+@register.inclusion_tag('attribution/display/facet.html')
+def render_unlinked_facet (query_parameters, facet_field, facet):
+    """Renders a facet display template with links to add and remove the
+    specified facet. This facet has no independent display on the
+    site."""
+    facet_name, facet_count = facet
+    return _render_facet(query_parameters, facet_field, facet_name,
+                         facet_name, facet_count)
