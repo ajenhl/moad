@@ -1,5 +1,6 @@
 {% extends "attribution/display/base.html" %}
-{% load search_index %}
+{% load ddh_utils_tags %}
+{% load facet_display search_index %}
 
 {% block title %}{{ block.super }}List of sources{% endblock title %}
 
@@ -14,27 +15,57 @@
   <h1>Sources</h1>
 </header>
 
-<table id="source-table">
-  <thead>
-    <tr>
-      <th scope="col">Date</th>
-      <th scope="col">Source</th>
-      <th scope="col">Number of Assertions</th>
-      <th scope="col" style="display: none;">Search</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for source in sources %}
-    <tr>
-      <td>{{ source.date }}</td>
-      <td><a href="{% url 'source_display' source.id %}">{{ source }}</a></td>
-      <td>{{ source.num_assertions }}</td>
-      <td style="display: none;">{{ source.name|remove_combining }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="row">
+  <div class="small-4 columns">
+    <form method="get" action=".">
+      <table>
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Search"></td>
+        </tr>
+      </table>
+    </form>
 
+    <h2>Filters</h2>
+
+    <dl class="accordion" data-accordion>
+      <dd class="accordion-navigation">
+        <a href="#panel-date-filter">Date</a>
+        <div class="content" id="panel-date-filter">
+          <ul>
+            {% for date in facets.fields.date %}
+            <li>{% render_date_facet querydict "date_exact" date %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dd>
+    </dl>
+  </div>
+
+  <div class="small-8 columns">
+    <table id="source-table" style="border: none;">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Source</th>
+          <th scope="col">Number of Assertions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in page.object_list %}
+        <tr>
+          <td>{{ result.date }}</td>
+          <td><a href="{% url 'source_display' result.pk %}">{{ result.name }}</a></td>
+          <td>{{ result.num_assertions }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% display_pagination querydict page %}
+  </div>
+</div>
 {% endblock content %}
 
 {% block end_js %}
@@ -43,7 +74,9 @@
 <script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
 <script>
 $(document).ready(function () {
-  $('#source-table').DataTable();
+  $('#source-table').DataTable({
+    info: false, ordering: false, paging: false, searching: false
+  });
 });
 </script>
 {% endblock end_js %}

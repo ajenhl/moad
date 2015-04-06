@@ -37,11 +37,6 @@ def source_display (request, source_id):
     context = {'source': source}
     return render(request, 'attribution/display/source.html', context)
 
-def source_list_display (request):
-    context = {'sources': Source.objects.annotate(
-        num_assertions=models.Count('assertions'))}
-    return render(request, 'attribution/display/source_list.html', context)
-
 def text_display (request, text_id):
     text = get_object_or_404(Text, pk=text_id)
     assertions = text.assertions

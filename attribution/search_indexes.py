@@ -40,9 +40,20 @@ class SourceIndex (indexes.SearchIndex, indexes.Indexable):
 
     text = indexes.CharField(document=True, use_template=True)
     date = indexes.IntegerField(faceted=True, null=True)
+    name = indexes.CharField(indexed=False, model_attr='name')
+    num_assertions = indexes.IntegerField(indexed=False)
 
     def get_model (self):
         return Source
+
+    def prepare_date (self, source):
+        try:
+            return int(source.date)
+        except ValueError:
+            return None
+
+    def prepare_num_assertions (self, source):
+        return source.assertions.count()
 
 
 class TextIndex (indexes.SearchIndex, indexes.Indexable):
