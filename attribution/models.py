@@ -187,10 +187,6 @@ class PropertyAssertion (models.Model):
     texts = models.ManyToManyField(Text, related_name='assertions')
     people = models.ManyToManyField(Person, blank=True, null=True,
                                     through=PersonInvolvement)
-    authors = models.ManyToManyField(Person, blank=True, null=True,
-                                     related_name='authored')
-    translators = models.ManyToManyField(Person, blank=True, null=True,
-                                         related_name='translated')
     source = models.ForeignKey(Source, related_name='assertions')
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
