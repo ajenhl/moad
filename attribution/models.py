@@ -189,7 +189,7 @@ class PropertyAssertion (models.Model):
     source = models.ForeignKey(Source, related_name='assertions')
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
-    is_preferred = models.BooleanField()
+    is_preferred = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'assertion'
