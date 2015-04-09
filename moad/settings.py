@@ -35,7 +35,6 @@ DEFAULT_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-    'south',
     'grappelli',
     'django.contrib.admin',
     'haystack',

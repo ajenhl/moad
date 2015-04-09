@@ -185,8 +185,7 @@ class Title (Namable, models.Model):
 class PropertyAssertion (models.Model):
 
     texts = models.ManyToManyField(Text, related_name='assertions')
-    people = models.ManyToManyField(Person, blank=True, null=True,
-                                    through=PersonInvolvement)
+    people = models.ManyToManyField(Person, through=PersonInvolvement)
     source = models.ForeignKey(Source, related_name='assertions')
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
