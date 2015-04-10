@@ -1,5 +1,8 @@
 from django import forms
+
 from haystack.forms import FacetedSearchForm
+
+from templatetags.search_index import remove_combining
 
 
 RESULTS_PER_PAGE = 20
@@ -19,6 +22,12 @@ class ModelSearchForm (FacetedSearchForm):
         return self.searchqueryset.all()
 
     def search (self):
+        if not self.is_valid():
+            return self.no_query_found()
+        # Use an unaccented form of the search query.
+        q = self.cleaned_data.get('q')
+        if q:
+            self.cleaned_data['q'] = remove_combining(q)
         sqs = super(ModelSearchForm, self).search()
         if not self.is_valid():
             return self.no_query_found()
