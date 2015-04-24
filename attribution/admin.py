@@ -40,6 +40,7 @@ class DateAdmin (admin.ModelAdmin):
 class PersonAdmin (SearchModelAdmin):
 
     list_display = ('name', 'date', 'sort_date')
+    search_fields = ('name', 'date', 'sort_date')
     fieldsets = (
         (None, {'fields': ('name', 'date', 'sort_date', 'notes')}),
     )
