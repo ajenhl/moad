@@ -23,6 +23,10 @@ class Person (Namable, Notable, SortDatable, models.Model):
     class Meta:
         ordering = ['name']
 
+    @staticmethod
+    def autocomplete_search_fields ():
+        return ('id__iexact', 'name__icontains',)
+
     def get_absolute_url (self):
         return reverse('person_display', args=[str(self.id)])
 
