@@ -1,7 +1,9 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from .behaviours import Namable, Notable, SortDatable
+from .behaviours import Namable, Notable, Publishable, SortDatable
+from .managers import PublishedManager
 
 
 class Date (Namable, Notable, SortDatable, models.Model):
@@ -16,9 +18,13 @@ class Identifier (Namable, Notable, models.Model):
                                   related_name='identifiers')
 
 
-class Person (Namable, Notable, SortDatable, models.Model):
+class Person (Namable, Notable, Publishable, SortDatable, models.Model):
 
     date = models.TextField(blank=True)
+    author = models.ForeignKey(User, related_name='authored_persons')
+
+    objects = models.Manager()
+    published_objects = PublishedManager()
 
     class Meta:
         ordering = ['name']
@@ -48,18 +54,22 @@ class PersonInvolvement (models.Model):
     role = models.ForeignKey('PersonRole', related_name='involvements')
 
 
-class PersonRole (Namable, Notable, models.Model):
+class PersonRole (Namable, Notable, Publishable, models.Model):
 
     pass
 
 
-class Source (Notable, models.Model):
+class Source (Notable, Publishable, models.Model):
 
     name = models.TextField(help_text='Full bibliographic details')
     date = models.CharField(max_length=5, help_text='Format: YYYY. Use the earliest date if there is a range')
     abbreviation = models.CharField(
         max_length=30, help_text='Bibliographic reference, eg. "Nattier 1992"',
         unique=True)
+    author = models.ForeignKey(User, related_name='authored_sources')
+
+    objects = models.Manager()
+    published_objects = PublishedManager()
 
     class Meta:
         ordering = ['-date']
@@ -84,7 +94,12 @@ class TextIdentifierCache (models.Model):
         return self.identifier
 
 
-class Text (models.Model):
+class Text (Publishable, models.Model):
+
+    author = models.ForeignKey(User, related_name='authored_texts')
+
+    objects = models.Manager()
+    published_objects = PublishedManager()
 
     class Meta:
         ordering = ['cached_identifier__identifier']
@@ -186,7 +201,7 @@ class Title (Namable, models.Model):
         return ('id__iexact', 'name__icontains')
 
 
-class PropertyAssertion (models.Model):
+class PropertyAssertion (Publishable, models.Model):
 
     texts = models.ManyToManyField(Text, related_name='assertions')
     people = models.ManyToManyField(Person, through=PersonInvolvement)
@@ -194,10 +209,32 @@ class PropertyAssertion (models.Model):
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
     is_preferred = models.BooleanField(default=False)
+    author = models.ForeignKey(User, related_name='authored_assertions')
+    contributors = models.ManyToManyField(
+        User, blank=True, related_name='contributed_assertions')
+    created = models.DateField(auto_now_add=True)
+    modified = models.DateField(auto_now=True)
+
+    objects = models.Manager()
+    published_objects = PublishedManager()
 
     class Meta:
         verbose_name = 'assertion'
         ordering = ['source']
+        permissions = (
+            ('change_assertion_author',
+             'Can change the author of an assertion'),
+            ('change_assertion_contributors',
+             'Can change contributors to an assertion'),
+            ('change_assertion_status',
+             'Can change publication status'),
+            # While the following permission is tied to this model, it
+            # is used as a convenient way to determine whether a user
+            # has permission to change *any* of the publishable model
+            # items.
+            ('change_published_items',
+             'Can change published items'),
+        )
 
     def delete (self, *args, **kwargs):
         texts = list(self.texts.all())

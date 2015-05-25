@@ -14,6 +14,7 @@ class PersonIndex (indexes.SearchIndex, indexes.Indexable):
     role = indexes.MultiValueField(faceted=True, null=True)
     source = indexes.MultiValueField(faceted=True, null=True)
     texts = indexes.MultiValueField(faceted=True, null=True)
+    status = indexes.CharField(model_attr='status')
 
     def get_model (self):
         return Person
@@ -31,6 +32,7 @@ class PersonIndex (indexes.SearchIndex, indexes.Indexable):
 class PropertyAssertionIndex (indexes.SearchIndex, indexes.Indexable):
 
     text = indexes.CharField(document=True, use_template=True)
+    status = indexes.CharField(model_attr='status')
 
     def get_model (self):
         return PropertyAssertion
@@ -42,6 +44,7 @@ class SourceIndex (indexes.SearchIndex, indexes.Indexable):
     date = indexes.IntegerField(faceted=True, null=True)
     name = indexes.CharField(indexed=False, model_attr='name')
     num_assertions = indexes.IntegerField(indexed=False)
+    status = indexes.CharField(model_attr='status')
 
     def get_model (self):
         return Source
@@ -70,6 +73,7 @@ class TextIndex (indexes.SearchIndex, indexes.Indexable):
     person = indexes.MultiValueField(faceted=True, null=True)
     source = indexes.MultiValueField(faceted=True, model_attr='get_sources',
                                      null=True)
+    status = indexes.CharField(model_attr='status')
 
     def get_model (self):
         return Text

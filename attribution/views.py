@@ -3,8 +3,9 @@ from django.shortcuts import get_object_or_404, render
 
 from ddh_utils.views import FacetedSearchView
 
-from attribution.forms import RESULTS_PER_PAGE
-from attribution.models import Date, Person, PropertyAssertion, Source, Text
+from .behaviours import PUBLISHED_STATUS
+from .forms import RESULTS_PER_PAGE
+from .models import Date, Person, PropertyAssertion, Source, Text
 import attribution.utils
 
 
@@ -28,18 +29,18 @@ def date_list_display (request):
     return render(request, 'attribution/display/date_list.html', context)
 
 def person_display (request, person_id):
-    person = get_object_or_404(Person, pk=person_id)
+    person = get_object_or_404(Person.published_objects, pk=person_id)
     context = {'person': person, 'assertions': person.get_assertions()}
     return render(request, 'attribution/display/person.html', context)
 
 def source_display (request, source_id):
-    source = get_object_or_404(Source, pk=source_id)
+    source = get_object_or_404(Source.published_objects, pk=source_id)
     context = {'source': source}
     return render(request, 'attribution/display/source.html', context)
 
 def text_display (request, text_id):
-    text = get_object_or_404(Text, pk=text_id)
-    assertions = text.assertions
+    text = get_object_or_404(Text.published_objects, pk=text_id)
+    assertions = text.assertions.filter(status=PUBLISHED_STATUS)
     summary = attribution.utils.get_text_summary(assertions)
     context = {'text': text, 'assertions': assertions, 'summary': summary}
     return render(request, 'attribution/display/text.html', context)

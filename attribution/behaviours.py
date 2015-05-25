@@ -1,6 +1,14 @@
 from django.db import models
 
 
+DRAFT_STATUS = 'DR'
+PUBLISHED_STATUS = 'PU'
+PUBLICATION_STATUSES = [
+    (DRAFT_STATUS, 'Draft'),
+    (PUBLISHED_STATUS, 'Published'),
+    ]
+
+
 class Namable (models.Model):
 
     name = models.CharField(max_length=500,
@@ -16,6 +24,15 @@ class Namable (models.Model):
 class Notable (models.Model):
 
     notes = models.TextField(blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class Publishable (models.Model):
+
+    status = models.CharField(choices=PUBLICATION_STATUSES,
+                              default=DRAFT_STATUS, max_length=2)
 
     class Meta:
         abstract = True
