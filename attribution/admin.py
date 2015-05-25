@@ -42,6 +42,15 @@ class PublishableModelAdmin (SearchModelAdmin):
             qs = qs.filter(status=DRAFT_STATUS).filter(author=user)
         return qs
 
+    def get_readonly_fields (self, request, obj=None):
+        fields = []
+        user = request.user
+        if not user.has_perm('attribution.change_assertion_author'):
+            fields.append('author')
+        if not user.has_perm('attribution.change_assertion_status'):
+            fields.append('status')
+        return fields
+
     def has_change_permission (self, request, obj=None):
         permission = super(PublishableModelAdmin, self).has_change_permission(
             request, obj)
@@ -148,17 +157,9 @@ class PropertyAssertionAdmin (PublishableModelAdmin):
     }
 
     def get_readonly_fields (self, request, obj=None):
-        fields = []
-        # It is useful to allow editors to modify the author of an
-        # assertion, in the case of one user creating an entry on
-        # behalf of another user.
-        user = request.user
-        if not user.has_perm('attribution.change_assertion_author'):
-            fields.append('author')
-        if not user.has_perm('attribution.change_assertion_contributor'):
+        fields = super(RelatedModelAdmin, self).get_readonly_fields(request)
+        if not request.user.has_perm('attribution.change_assertion_contributor'):
             fields.append('contributors')
-        if not user.has_perm('attribution.change_assertion_status'):
-            fields.append('status')
         return fields
 
     def save_model (self, request, obj, form, change):
