@@ -157,7 +157,8 @@ class PropertyAssertionAdmin (PublishableModelAdmin):
     }
 
     def get_readonly_fields (self, request, obj=None):
-        fields = super(RelatedModelAdmin, self).get_readonly_fields(request)
+        fields = super(PropertyAssertionAdmin, self).get_readonly_fields(
+            request)
         if not request.user.has_perm('attribution.change_assertion_contributor'):
             fields.append('contributors')
         return fields
