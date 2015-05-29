@@ -17,9 +17,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -112,10 +112,8 @@ HAYSTACK_CONNECTIONS = {
         'TIMEOUT': 60 * 5,
     },
 }
-# Do not use RealtimeSignalProcessor because it causes failures with
-# adding a Text, since the index is run when the Text is saved but
-# before it has a cached identifier, leading to an error.
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.BaseSignalProcessor'
+
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # Local settings.
 try:

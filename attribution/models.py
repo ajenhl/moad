@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from .behaviours import Namable, Notable, Publishable, SortDatable
+import constants
 from .managers import PublishedManager
 
 
@@ -85,24 +86,17 @@ class Source (Notable, Publishable, models.Model):
         return self.name
 
 
-class TextIdentifierCache (models.Model):
-
-    text = models.OneToOneField('Text', related_name='cached_identifier')
-    identifier = models.TextField(blank=True)
-
-    def __unicode__ (self):
-        return self.identifier
-
-
 class Text (Publishable, models.Model):
 
+    identifier = models.TextField(blank=True,
+                                  help_text=constants.TEXT_IDENTIFIER_HELP)
     author = models.ForeignKey(User, related_name='authored_texts')
 
     objects = models.Manager()
     published_objects = PublishedManager()
 
     class Meta:
-        ordering = ['cached_identifier__identifier']
+        ordering = ['identifier']
 
     def get_absolute_url (self):
         return reverse('text_display', args=[str(self.id)])
@@ -178,17 +172,11 @@ class Text (Publishable, models.Model):
         return list(titles.values_list('name', flat=True).distinct())
 
     def save (self, *args, **kwargs):
+        self.identifier = self.generate_identifier()
         super(Text, self).save(*args, **kwargs)
-        identifier = self.generate_identifier()
-        try:
-            cache = self.cached_identifier
-            cache.identifier = identifier
-        except TextIdentifierCache.DoesNotExist:
-            cache = TextIdentifierCache(text=self, identifier=identifier)
-        cache.save()
 
     def __unicode__ (self):
-        return unicode(self.cached_identifier)
+        return unicode(self.identifier)
 
 
 class Title (Namable, models.Model):
