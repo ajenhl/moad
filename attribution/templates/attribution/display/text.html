@@ -63,19 +63,13 @@
 
           {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
 
-          {% with texts=assertion.texts.all %}
-          {% if texts|length > 1 %}
-          <li><span class="assertion-property-title">Other texts:</span>
+          <li><span class="assertion-property-title">Texts:</span>
             <ul class="no-bullet">
-              {% for other_text in texts %}
-              {% if other_text != text %}
-              <li><a href="{% url 'text_display' other_text.pk %}">{{ other_text }}</a></li>
-              {% endif %}
+              {% for text in assertion.texts.all %}
+              <li><a href="{% url 'text_display' text.pk %}">{{ text }}</a></li>
               {% endfor %}
             </ul>
           </li>
-          {% endif %}
-          {% endwith %}
         </ul>
       </td>
       <td>{% if assertion.argument %}{{ assertion.argument|linebreaks }}{% endif %}
