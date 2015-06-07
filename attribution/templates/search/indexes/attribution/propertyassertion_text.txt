@@ -5,7 +5,7 @@
 {{ name }} {{ name|remove_combining }}
 {% endwith %}
 {% for text in object.texts.all %}
-{% with identifier=text.cached_identifier.identifier %}
+{% with identifier=text.identifier %}
 {{ identifier }} {{ identifier|remove_combining }}
 {% endwith %}
 {% endfor %}

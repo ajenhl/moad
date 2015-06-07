@@ -199,7 +199,7 @@ class SourceAdmin (PublishableModelAdmin):
 class TextAdmin (PublishableModelAdmin):
 
     actions = ['regenerate_identifier']
-    search_fields = ('cached_identifier__identifier',)
+    search_fields = ('identifier',)
 
     def get_readonly_fields (self, request, obj=None):
         fields = super(TextAdmin, self).get_readonly_fields(request)

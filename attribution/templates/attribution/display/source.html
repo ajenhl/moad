@@ -49,7 +49,7 @@
         <p><a href="{% url 'admin:attribution_propertyassertion_change' assertion.pk %}">Edit</a></p>
       </td>
       <td>{% if assertion.source_detail %}{{ assertion.source_detail|linebreaks }}{% endif %}</td>
-      <td style="display: none;">{{ assertion.argument|remove_combining }} {% for person in assertion.people.all %}{{ person.name|remove_combining }} {% endfor %} {% for text in texts %}{{ text.cached_identifier.identifier|remove_combining }} {% endfor %}</td>
+      <td style="display: none;">{{ assertion.argument|remove_combining }} {% for person in assertion.people.all %}{{ person.name|remove_combining }} {% endfor %} {% for text in texts %}{{ text.identifier|remove_combining }} {% endfor %}</td>
     </tr>
     {% endwith %}
     {% endfor %}
