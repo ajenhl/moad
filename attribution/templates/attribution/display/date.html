@@ -2,12 +2,6 @@
 
 {% block title %}{{ block.super }}Date: {{ date }}{% endblock title %}
 
-{% block css %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.css">
-{% endblock css %}
-
 {% block content %}
 <header>
   <h1>Date: {{ date }}</h1>
@@ -49,7 +43,7 @@
             </ul>
           </td>
           <td>
-            <p>{{ assertion.source }}{% if assertion.source_detail %} &#8212; {{ assertion.source_detail }}{% endif %}</p>
+            {% with source=assertion.source %}<p>[<a href="{% url 'source_display' source.pk %}">{{ source.abbreviation }}</a>] {{ source }}{% if assertion.source_detail %} &#8212; {{ assertion.source_detail }}{% endif %}</p>{% endwith %}
           </td>
         </tr>
         {% endfor %}
@@ -64,8 +58,6 @@
 
 {% block end_js %}
 {{ block.super }}
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
 <script>
 $(document).ready(function () {
   $('#person-table').DataTable();

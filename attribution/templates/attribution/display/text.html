@@ -34,24 +34,40 @@
 
 <h2>Assertions</h2>
 
-<table>
+<table id="assertion-table">
   <thead>
     <tr>
+      <th scope="col">Preferred?</th>
       <th scope="col">Source</th>
-      <th scope="col">Assertion</th>
+      <th scope="col">Pertains to</th>
       <th scope="col">Argument</th>
+      <th scope="col">Details</th>
     </tr>
   </thead>
   <tbody>
-  {% for assertion in text.assertions.all %}
+    {% for assertion in assertions %}
     <tr>
-      <td id="assertion-{{ assertion.pk }}">
-        {% with source=assertion.source %}
+      <td>
+        <p>{% if assertion.is_preferred %}Yes{% else %}No{% endif %}</p>
+      </td>
+      {% with source=assertion.source %}
+      <td id="assertion-{{ assertion.pk }}" data-order="{{ source.date }}">
         <p>[<a href="{% url 'source_display' source.id %}">{{ source.abbreviation }}</a>]&nbsp;&nbsp; {{ source }}
-        {% endwith %}
         {% if assertion.source_detail %}
         &#8212; {{ assertion.source_detail }}
         {% endif %}</p>
+      </td>
+      {% endwith %}
+      <td>
+        <ul class="no-bullet">
+          {% for text in assertion.texts.all %}
+          <li><a href="{% url 'text_display' text.pk %}">{{ text }}</a></li>
+          {% endfor %}
+        </ul>
+      </td>
+      <td>{% if assertion.argument %}{{ assertion.argument|linebreaks }}{% endif %}
+        <p>Entry author: {% with author=assertion.author %}{{ author.first_name }} {{ author.last_name }}{% endwith %}</p>
+        <p><a href="{% url 'admin:attribution_propertyassertion_change' assertion.pk %}">Edit</a></p>
       </td>
       <td>
         <ul class="no-bullet">
@@ -62,21 +78,25 @@
           {% include "attribution/display/text_date.html" with title="Date" dates=assertion.dates.all link=True %}
 
           {% include "attribution/display/text_property.html" with title="Identifier" properties=assertion.identifiers.all %}
-
-          <li><span class="assertion-property-title">Texts:</span>
-            <ul class="no-bullet">
-              {% for text in assertion.texts.all %}
-              <li><a href="{% url 'text_display' text.pk %}">{{ text }}</a></li>
-              {% endfor %}
-            </ul>
-          </li>
         </ul>
-      </td>
-      <td>{% if assertion.argument %}{{ assertion.argument|linebreaks }}{% endif %}
-        <p><a href="{% url 'admin:attribution_propertyassertion_change' assertion.pk %}">Edit</a></p>
       </td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 {% endblock content %}
+
+{% block end_js %}
+{{ block.super }}
+<script>
+$(document).ready(function () {
+  $('#assertion-table').DataTable({
+    "order": [[1, "desc"]],
+    "paging": false,
+    "columnDefs": [
+      { "orderable": false, "targets": [2, 3, 4] }
+    ]
+  });
+});
+</script>
+{% endblock end_js %}

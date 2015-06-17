@@ -8,6 +8,8 @@
     {% block css %}
     <link rel="stylesheet" href="{% static 'foundation/css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'foundation/css/foundation.css' %}">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/1.10.7/integration/foundation/dataTables.foundation.css">
     <link rel="stylesheet" href="{% static 'css/site.css' %}">
     {% endblock css %}
     {% block js %}
@@ -61,6 +63,8 @@
     <script>
       $(document).foundation();
     </script>
+    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/foundation/dataTables.foundation.js"></script>
     {% endblock end_js %}
   {% endblock body %}
   </body>

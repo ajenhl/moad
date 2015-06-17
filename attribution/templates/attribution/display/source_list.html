@@ -4,12 +4,6 @@
 
 {% block title %}{{ block.super }}List of sources{% endblock title %}
 
-{% block css %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.css">
-{% endblock css %}
-
 {% block content %}
 <header>
   <h1>Sources</h1>
@@ -70,12 +64,10 @@
 
 {% block end_js %}
 {{ block.super }}
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/foundation/dataTables.foundation.js"></script>
 <script>
 $(document).ready(function () {
   $('#source-table').DataTable({
-    info: false, ordering: false, paging: false, searching: false
+    "info": false, "ordering": false, "paging": false, "searching": false
   });
 });
 </script>
