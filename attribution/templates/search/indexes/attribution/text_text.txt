@@ -1,6 +1,6 @@
 {% load search_index %}
 
-{% for identifier in object.get_identifiers %}{{ identifier }} {% endfor %}
+{% for identifier in object.get_identifiers %}{{ identifier|split_identifier }} {% endfor %}
 {% for title in object.get_titles %}
   {{ title }} {{ title|remove_combining }}
 {% endfor %}
