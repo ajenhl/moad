@@ -131,9 +131,9 @@ class PersonAdmin (PublishableModelAdmin):
 class PropertyAssertionAdmin (PublishableModelAdmin):
 
     list_display = ('source_abbreviation', 'argument', 'is_preferred',
-                    'status')
+                    'status', 'author')
     list_display_links = ('source_abbreviation', 'argument')
-    list_filter = ('is_preferred', 'status')
+    list_filter = ('is_preferred', 'status', 'author')
     search_fields = ('argument',)
     fieldsets = (
         (None, {'fields': ('texts',)}),
