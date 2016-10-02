@@ -1,0 +1,4 @@
+ddh_django_utils
+django_grappelli
+django_haystack
+elasticsearch
