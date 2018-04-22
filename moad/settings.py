@@ -33,6 +33,19 @@ DEFAULT_APPS = (
 )
 
 THIRD_PARTY_APPS = (
+    'wagtail.wagtailforms',
+    'wagtail.wagtailredirects',
+    'wagtail.wagtailembeds',
+    'wagtail.wagtailsites',
+    'wagtail.wagtailusers',
+    'wagtail.wagtailsnippets',
+    'wagtail.wagtaildocs',
+    'wagtail.wagtailimages',
+    #'wagtail.wagtailsearch',
+    'wagtail.wagtailadmin',
+    'wagtail.wagtailcore',
+    'modelcluster',
+    'taggit',
     'grappelli',
     'django.contrib.admin',
     'haystack',
@@ -42,6 +55,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'logentry_admin',
     'attribution',
+    'home',
 )
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -53,22 +67,28 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
+    'wagtail.wagtailcore.middleware.SiteMiddleware',
+    'wagtail.wagtailredirects.middleware.RedirectMiddleware',
 )
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': os.path.join(BASE_DIR, 'moad/templates'),
-        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'moad/templates')],
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.request',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
             ],
         }
     }
@@ -102,6 +122,9 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'moad/static'),
 )
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Grappelli settings.
 GRAPPELLI_ADMIN_TITLE = 'CBC@'
 
@@ -117,8 +140,12 @@ HAYSTACK_CONNECTIONS = {
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
+
+# Wagtail settings.
+WAGTAIL_SITE_NAME = 'Dazangthings'
+
 # Local settings.
 try:
-    from local_settings import *
+    from .local_settings import *
 except ImportError:
     pass
