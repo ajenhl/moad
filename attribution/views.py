@@ -10,14 +10,16 @@ import attribution.utils
 
 
 def home_display (request):
-    return render(request, 'attribution/display/home.html')
+    context = {'url_path': request.path}
+    return render(request, 'attribution/display/home.html', context)
 
 def date_display (request, date):
     people = Person.objects.filter(sort_date=date)
     assertions = PropertyAssertion.objects.filter(
         models.Q(dates__sort_date=date) |
         models.Q(people__sort_date=date))
-    context = {'date': date, 'people': people, 'assertions': assertions}
+    context = {'date': date, 'people': people, 'assertions': assertions,
+               'url_path': request.path}
     return render(request, 'attribution/display/date.html', context)
 
 def date_list_display (request):
@@ -25,24 +27,26 @@ def date_list_display (request):
                      list(Person.objects.values_list('sort_date', flat=True))))
     dates = [date for date in dates if date]
     dates.sort()
-    context = {'dates': dates}
+    context = {'dates': dates, 'url_path': request.path}
     return render(request, 'attribution/display/date_list.html', context)
 
 def person_display (request, person_id):
     person = get_object_or_404(Person.published_objects, pk=person_id)
-    context = {'person': person, 'assertions': person.get_assertions()}
+    context = {'person': person, 'assertions': person.get_assertions(),
+               'url_path': request.path}
     return render(request, 'attribution/display/person.html', context)
 
 def source_display (request, source_id):
     source = get_object_or_404(Source.published_objects, pk=source_id)
-    context = {'source': source}
+    context = {'source': source, 'url_path': request.path}
     return render(request, 'attribution/display/source.html', context)
 
 def text_display (request, text_id):
     text = get_object_or_404(Text.published_objects, pk=text_id)
     assertions = text.assertions.filter(status=PUBLISHED_STATUS)
     summary = attribution.utils.get_text_summary(assertions)
-    context = {'text': text, 'assertions': assertions, 'summary': summary}
+    context = {'text': text, 'assertions': assertions, 'summary': summary,
+               'url_path': request.path}
     return render(request, 'attribution/display/text.html', context)
 
 

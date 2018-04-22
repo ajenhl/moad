@@ -14,6 +14,18 @@
     {% endblock css %}
     {% block js %}
     <script src="{% static 'foundation/js/vendor/modernizr.js' %}"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-61745788-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      var options = {};
+      if (location.hostname != 'dazangthings.nz') {
+        options['send_page_view'] = false;
+      }
+      gtag('config', 'UA-61745788-1', options);
+    </script>
     {% endblock js %}
   </head>
   <body>
@@ -22,7 +34,7 @@
     <nav class="top-bar" data-topbar>
       <ul class="title-area">
         <li class="name">
-          <h1><a href="/" title="Chinese Buddhist Canonical Attributions home">CBC@</a></h1>
+          <h1><a href="{% url 'home_display' %}" title="Chinese Buddhist Canonical Attributions home">CBC@</a></h1>
         </li>
         <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
       </ul>
@@ -37,6 +49,8 @@
           <li><a href="{% url 'person_list_display' %}">Persons</a></li>
           <li><a href="{% url 'source_list_display' %}">Sources</a></li>
           <li><a href="{% url 'date_list_display' %}">Dates</a></li>
+          <li><a href="/cbc-guide/">User's Guide</a></li>
+          <li><a href="/cbc-guide/abbreviations/">Abbreviations</a></li>
         </ul>
       </section>
     </nav>
@@ -51,14 +65,13 @@
       <div class="small-12 columns">
         <footer>
           <p>The Chinese Buddhist Canonical Attributions project is
-          the brainchild of Michael Radich
-          &lt;Michael.Radich@vuw.ac.nz&gt; and Jamie Norrish
-          &lt;jamie@artefact.org.nz&gt;. We welcome corrections and
-          edits to individual entries, and suggestions for improvement
-          to the database as a whole. Please email all such comments
-          to Radich. We also welcome fresh contributions. If you are
-          interested in becoming a contributor, please also email
-          Radich.</p>
+          the brainchild
+          of <a href="mailto:michael.radich@vuw.ac.nz?subject=CBC%40%20feedback%20on%20{{ url_path }}">Michael Radich</a> and Jamie Norrish. We
+          welcome corrections and edits to individual entries, and
+          suggestions for improvement to the database as a
+          whole. Please email all such comments to <a href="mailto:michael.radich@vuw.ac.nz?subject=CBC%40%20feedback%20on%20{{ url_path }}">Radich</a>. We also
+          welcome fresh contributions. If you are interested in
+          becoming a contributor, please also email <a href="mailto:michael.radich@vuw.ac.nz?subject=CBC%40%20feedback%20on%20{{ url_path }}">Radich</a>.</p>
         </footer>
       </div>
     </div>
