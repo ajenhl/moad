@@ -4,7 +4,7 @@ from attribution.models import PersonRole
 def _assemble_preferred_assertion_data (assertion, property_name):
     data = None
     if assertion is not None:
-        value = '; '.join([unicode(prop) for prop
+        value = '; '.join([str(prop) for prop
                            in getattr(assertion, property_name).all()])
         data = {'value': value, 'id': assertion.pk,
                 'source': assertion.source.abbreviation}
@@ -21,7 +21,7 @@ def _get_person_summary_data (assertions):
             assertion = all_assertions[0]
         else:
             continue
-        value = '; '.join([unicode(person) for person in
+        value = '; '.join([str(person) for person in
                            assertion.people.filter(involvements__role=role)])
         data[role] = {'value': value, 'id': assertion.pk,
                       'source': assertion.source.abbreviation}

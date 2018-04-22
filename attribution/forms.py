@@ -2,7 +2,7 @@ from django import forms
 
 from haystack.forms import FacetedSearchForm
 
-from templatetags.search_index import remove_combining
+from .templatetags.search_index import remove_combining
 
 
 RESULTS_PER_PAGE = 20
@@ -16,7 +16,7 @@ class ModelSearchForm (FacetedSearchForm):
     end_date = forms.IntegerField(required=False)
     results_per_page = forms.TypedChoiceField(
         choices=RESULTS_PER_PAGE_CHOICES, coerce=int,
-        empty_value=RESULTS_PER_PAGE, initial=RESULTS_PER_PAGE)
+        empty_value=RESULTS_PER_PAGE, initial=RESULTS_PER_PAGE, required=False)
 
     def no_query_found (self):
         return self.searchqueryset.all()

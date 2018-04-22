@@ -4,7 +4,7 @@ from haystack.views import search_view_factory
 
 from .forms import ModelSearchForm
 from .models import Person, Source, Text
-import attribution.views as views
+from . import views
 
 
 urlpatterns = [
@@ -15,8 +15,7 @@ urlpatterns = [
         name='person_display'),
     url(r'^source/(?P<source_id>\d+)/$', views.source_display,
         name='source_display'),
-    url(r'^text/(?P<text_id>\d+)/$', views.text_display,
-        name='text_display'),
+    url(r'^text/(?P<text_id>\d+)/$', views.text_display, name='text_display'),
 ]
 
 # Search.

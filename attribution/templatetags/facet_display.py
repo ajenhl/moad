@@ -43,7 +43,7 @@ def render_person_facet (query_parameters, facet_field, facet):
     facet_name, facet_count = facet
     person = Person.objects.get(pk=int(facet_name))
     return _render_facet(query_parameters, facet_field, facet_name,
-                         unicode(person), facet_count, 'person_display')
+                         str(person), facet_count, 'person_display')
 
 @register.inclusion_tag('attribution/display/facet.html')
 def render_source_facet (query_parameters, facet_field, facet):
@@ -61,7 +61,7 @@ def render_text_facet (query_parameters, facet_field, facet):
     facet_name, facet_count = facet
     text = Text.objects.get(pk=int(facet_name))
     return _render_facet(query_parameters, facet_field, facet_name,
-                         unicode(text), facet_count, 'text_display')
+                         str(text), facet_count, 'text_display')
 
 @register.inclusion_tag('attribution/display/facet.html')
 def render_unlinked_facet (query_parameters, facet_field, facet):

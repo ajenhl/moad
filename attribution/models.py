@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 from .behaviours import Namable, Notable, Publishable, SortDatable
-import constants
+from . import constants
 from .managers import PublishedManager
 
 
@@ -82,7 +82,7 @@ class Source (Notable, Publishable, models.Model):
     def get_absolute_url (self):
         return reverse('source_display', args=[str(self.id)])
 
-    def __unicode__ (self):
+    def __str__ (self):
         return self.name
 
 
@@ -175,8 +175,8 @@ class Text (Publishable, models.Model):
         self.identifier = self.generate_identifier()
         super(Text, self).save(*args, **kwargs)
 
-    def __unicode__ (self):
-        return unicode(self.identifier)
+    def __str__ (self):
+        return str(self.identifier)
 
 
 class Title (Namable, models.Model):
@@ -258,7 +258,7 @@ class PropertyAssertion (Publishable, models.Model):
             return True
         return False
 
-    def __unicode__ (self):
+    def __str__ (self):
         argument = u'[No argument provided]'
         if self.argument:
             argument = u'%s...' % self.argument[:30]
