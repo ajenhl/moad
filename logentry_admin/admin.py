@@ -56,7 +56,7 @@ class LogEntryAdmin(admin.ModelAdmin):
                        ['object_link', 'action_description', 'user_link'])
 
     fieldsets = (
-        (_(u'Metadata'), {
+        (_('Metadata'), {
             'fields': (
                 'action_time',
                 'user_link',
@@ -64,7 +64,7 @@ class LogEntryAdmin(admin.ModelAdmin):
                 'object_link',
             )
         }),
-        (_(u'Detail'), {
+        (_('Detail'), {
             'fields': (
                 'change_message',
                 'content_type',
@@ -107,24 +107,24 @@ class LogEntryAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    def object_link (self, obj):
+    def object_link(self, obj):
         ct = obj.content_type
         repr_ = escape(obj.object_repr)
         try:
             href = reverse('admin:%s_%s_change' % (ct.app_label, ct.model),
-                        args=[obj.object_id])
-            link = u'<a href="%s">%s</a>' % (href, repr_)
+                           args=[obj.object_id])
+            link = '<a href="%s">%s</a>' % (href, repr_)
         except NoReverseMatch:
             link = repr_
         return link if obj.action_flag != admin.models.DELETION else repr_
     object_link.allow_tags = True
     object_link.admin_order_field = 'object_repr'
-    object_link.short_description = u'object'
+    object_link.short_description = 'object'
 
     def user_link(self, obj):
         try:
             ct = ContentType.objects.get_for_model(obj.user._meta.model)
-            link = u'<a href="%s">%s</a>' % (
+            link = '<a href="%s">%s</a>' % (
                 reverse(
                     'admin:%s_%s_change' % (ct.app_label, ct.model),
                     args=[obj.user.pk]
@@ -136,7 +136,7 @@ class LogEntryAdmin(admin.ModelAdmin):
         return link
     user_link.allow_tags = True
     user_link.admin_order_field = 'user'
-    user_link.short_description = u'user'
+    user_link.short_description = 'user'
 
     def queryset(self, request):
         queryset = super(LogEntryAdmin, self).queryset(request)

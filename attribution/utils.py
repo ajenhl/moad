@@ -1,7 +1,7 @@
 from attribution.models import PersonRole
 
 
-def _assemble_preferred_assertion_data (assertion, property_name):
+def _assemble_preferred_assertion_data(assertion, property_name):
     data = None
     if assertion is not None:
         value = '; '.join([str(prop) for prop
@@ -10,7 +10,8 @@ def _assemble_preferred_assertion_data (assertion, property_name):
                 'source': assertion.source.abbreviation}
     return data
 
-def _get_person_summary_data (assertions):
+
+def _get_person_summary_data(assertions):
     data = {}
     for role in PersonRole.objects.all():
         all_assertions = assertions.filter(person_involvements__role=role)
@@ -27,8 +28,9 @@ def _get_person_summary_data (assertions):
                       'source': assertion.source.abbreviation}
     return data
 
-def _get_preferred_assertion (assertions, property_name):
-    lookup = '%s__isnull' % property_name
+
+def _get_preferred_assertion(assertions, property_name):
+    lookup = '{}__isnull'.format(property_name)
     query = {lookup: False}
     all_properties = assertions.filter(**query)
     preferred_properties = all_properties.filter(is_preferred=True)
@@ -39,11 +41,13 @@ def _get_preferred_assertion (assertions, property_name):
     else:
         return None
 
-def _get_summary_data (assertions, property_name):
+
+def _get_summary_data(assertions, property_name):
     assertion = _get_preferred_assertion(assertions, property_name)
     return _assemble_preferred_assertion_data(assertion, property_name)
 
-def get_text_summary (assertions):
+
+def get_text_summary(assertions):
     data = {
         'date': _get_summary_data(assertions, 'dates'),
         'identifier': _get_summary_data(assertions, 'identifiers'),

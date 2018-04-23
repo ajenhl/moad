@@ -9,11 +9,12 @@ from .models import Date, Person, PropertyAssertion, Source, Text
 import attribution.utils
 
 
-def home_display (request):
+def home_display(request):
     context = {'url_path': request.path}
     return render(request, 'attribution/display/home.html', context)
 
-def date_display (request, date):
+
+def date_display(request, date):
     people = Person.objects.filter(sort_date=date)
     assertions = PropertyAssertion.objects.filter(
         models.Q(dates__sort_date=date) |
@@ -22,26 +23,30 @@ def date_display (request, date):
                'url_path': request.path}
     return render(request, 'attribution/display/date.html', context)
 
-def date_list_display (request):
-    dates = list(set(list(Date.objects.values_list('sort_date', flat=True)) + \
+
+def date_list_display(request):
+    dates = list(set(list(Date.objects.values_list('sort_date', flat=True)) +
                      list(Person.objects.values_list('sort_date', flat=True))))
     dates = [date for date in dates if date]
     dates.sort()
     context = {'dates': dates, 'url_path': request.path}
     return render(request, 'attribution/display/date_list.html', context)
 
-def person_display (request, person_id):
+
+def person_display(request, person_id):
     person = get_object_or_404(Person.published_objects, pk=person_id)
     context = {'person': person, 'assertions': person.get_assertions(),
                'url_path': request.path}
     return render(request, 'attribution/display/person.html', context)
 
-def source_display (request, source_id):
+
+def source_display(request, source_id):
     source = get_object_or_404(Source.published_objects, pk=source_id)
     context = {'source': source, 'url_path': request.path}
     return render(request, 'attribution/display/source.html', context)
 
-def text_display (request, text_id):
+
+def text_display(request, text_id):
     text = get_object_or_404(Text.published_objects, pk=text_id)
     assertions = text.assertions.filter(status=PUBLISHED_STATUS)
     summary = attribution.utils.get_text_summary(assertions)
@@ -52,7 +57,7 @@ def text_display (request, text_id):
 
 class ModelSearchView (FacetedSearchView):
 
-    def build_page (self):
+    def build_page(self):
         # Allow for the number of results per page to be set
         # dynamically.
         if self.form.is_valid():

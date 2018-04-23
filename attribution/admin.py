@@ -35,14 +35,14 @@ class TitleInline (admin.TabularInline):
 
 class PublishableModelAdmin (SearchModelAdmin):
 
-    def get_queryset (self, request):
+    def get_queryset(self, request):
         qs = super(PublishableModelAdmin, self).get_queryset(request)
         user = request.user
         if not user.has_perm('attribution.change_published_items'):
             qs = qs.filter(status=DRAFT_STATUS).filter(author=user)
         return qs
 
-    def get_readonly_fields (self, request, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         fields = []
         user = request.user
         if not user.has_perm('attribution.change_assertion_author'):
@@ -51,7 +51,7 @@ class PublishableModelAdmin (SearchModelAdmin):
             fields.append('status')
         return fields
 
-    def has_change_permission (self, request, obj=None):
+    def has_change_permission(self, request, obj=None):
         permission = super(PublishableModelAdmin, self).has_change_permission(
             request, obj)
         if obj is not None:
@@ -59,7 +59,7 @@ class PublishableModelAdmin (SearchModelAdmin):
                 permission = True
         return permission
 
-    def has_delete_permission (self, request, obj=None):
+    def has_delete_permission(self, request, obj=None):
         permission = super(PublishableModelAdmin, self).has_delete_permission(
             request, obj)
         if obj is not None:
@@ -67,7 +67,7 @@ class PublishableModelAdmin (SearchModelAdmin):
                 permission = True
         return permission
 
-    def save_model (self, request, obj, form, change):
+    def save_model(self, request, obj, form, change):
         # Set the author when creating the object.
         if not change:
             obj.author = request.user
@@ -85,7 +85,7 @@ class RelatedModelAdmin (admin.ModelAdmin):
 
     """
 
-    def get_queryset (self, request):
+    def get_queryset(self, request):
         qs = super(RelatedModelAdmin, self).get_queryset(request)
         user = request.user
         if not user.has_perm('attribution.change_published_items'):
@@ -93,7 +93,7 @@ class RelatedModelAdmin (admin.ModelAdmin):
                 assertion__author=user)
         return qs
 
-    def has_change_permission (self, request, obj=None):
+    def has_change_permission(self, request, obj=None):
         permission = super(RelatedModelAdmin, self).has_change_permission(
             request, obj)
         if obj is not None:
@@ -103,7 +103,7 @@ class RelatedModelAdmin (admin.ModelAdmin):
                 permission = True
         return permission
 
-    def has_delete_permission (self, request, obj=None):
+    def has_delete_permission(self, request, obj=None):
         permission = super(RelatedModelAdmin, self).has_delete_permission(
             request, obj)
         if obj is not None:
@@ -137,10 +137,9 @@ class PropertyAssertionAdmin (PublishableModelAdmin):
     search_fields = ('argument',)
     fieldsets = (
         (None, {'fields': ('texts',)}),
-        (None, {'classes': ('placeholder person_involvements-group',), 'fields': ()}),
-        (None,
-
-    {'classes': ('placeholder titles-group',), 'fields': ()}),
+        (None, {'classes': ('placeholder person_involvements-group',),
+                'fields': ()}),
+        (None, {'classes': ('placeholder titles-group',), 'fields': ()}),
         (None, {'classes': ('placeholder dates-group',), 'fields': ()}),
         (None, {'classes': ('placeholder identifiers-group',), 'fields': ()}),
         ('Source and argument',
@@ -156,14 +155,15 @@ class PropertyAssertionAdmin (PublishableModelAdmin):
         'fk': ['source'],
     }
 
-    def get_readonly_fields (self, request, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         fields = super(PropertyAssertionAdmin, self).get_readonly_fields(
             request)
-        if not request.user.has_perm('attribution.change_assertion_contributor'):
+        if not request.user.has_perm(
+                'attribution.change_assertion_contributor'):
             fields.append('contributors')
         return fields
 
-    def save_model (self, request, obj, form, change):
+    def save_model(self, request, obj, form, change):
         super(PropertyAssertionAdmin, self).save_model(request, obj, form,
                                                        change)
         # If the status is changed to Published, make all of the
@@ -179,13 +179,13 @@ class PropertyAssertionAdmin (PublishableModelAdmin):
                 text.status = PUBLISHED_STATUS
                 text.save()
 
-    def save_related (self, request, form, formsets, change):
+    def save_related(self, request, form, formsets, change):
         super(PropertyAssertionAdmin, self).save_related(request, form,
                                                          formsets, change)
         for text in form.instance.texts.all():
             text.save()
 
-    def source_abbreviation (self, obj):
+    def source_abbreviation(self, obj):
         return obj.source.abbreviation
 
 
@@ -201,12 +201,12 @@ class TextAdmin (PublishableModelAdmin):
     actions = ['regenerate_identifier']
     search_fields = ('identifier',)
 
-    def get_readonly_fields (self, request, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         fields = super(TextAdmin, self).get_readonly_fields(request)
         fields.append('identifier')
         return fields
 
-    def regenerate_identifier (self, request, queryset):
+    def regenerate_identifier(self, request, queryset):
         for text in queryset:
             text.save()
     regenerate_identifier.short_description = 'Update the generated identifier for the selected texts'

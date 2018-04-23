@@ -12,7 +12,7 @@ class Command (BaseCommand):
     help = 'Imports text identifiers and titles from a CSV file'
 
     @transaction.atomic
-    def handle (self, *args, **options):
+    def handle(self, *args, **options):
         if len(args) != 2:
             raise CommandError(
                 'A single CSV file and source ID must be supplied')
@@ -20,13 +20,13 @@ class Command (BaseCommand):
         try:
             source = attribution.models.Source.objects.get(pk=int(source_id))
         except attribution.models.Source.DoesNotExist:
-            raise CommandError('Source "%s" does not exist' % source_id)
+            raise CommandError('Source "{}" does not exist'.format(source_id))
         with open(filename, 'rb') as csvfile:
             reader = csv.reader(csvfile)
             for row in reader:
                 self._add_text(source, *row)
 
-    def _add_text (self, source, identifier, title):
+    def _add_text(self, source, identifier, title):
         assertion = attribution.models.PropertyAssertion.objects.create(
             is_preferred=False, source=source)
         text = attribution.models.Text.objects.create()

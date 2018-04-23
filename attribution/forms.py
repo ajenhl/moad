@@ -18,10 +18,10 @@ class ModelSearchForm (FacetedSearchForm):
         choices=RESULTS_PER_PAGE_CHOICES, coerce=int,
         empty_value=RESULTS_PER_PAGE, initial=RESULTS_PER_PAGE, required=False)
 
-    def no_query_found (self):
+    def no_query_found(self):
         return self.searchqueryset.all()
 
-    def search (self):
+    def search(self):
         if not self.is_valid():
             return self.no_query_found()
         # Use an unaccented form of the search query.

@@ -31,13 +31,13 @@ class Person (Namable, Notable, Publishable, SortDatable, models.Model):
         ordering = ['name']
 
     @staticmethod
-    def autocomplete_search_fields ():
+    def autocomplete_search_fields():
         return ('id__iexact', 'name__icontains',)
 
-    def get_absolute_url (self):
+    def get_absolute_url(self):
         return reverse('person_display', args=[str(self.id)])
 
-    def get_assertions (self):
+    def get_assertions(self):
         """Returns a dictionary with PersonRole keys and lists of
         PropertyAssertions values."""
         typed_assertions = {}
@@ -63,7 +63,8 @@ class PersonRole (Namable, Notable, Publishable, models.Model):
 class Source (Notable, Publishable, models.Model):
 
     name = models.TextField(help_text='Full bibliographic details')
-    date = models.CharField(max_length=5, help_text='Format: YYYY. Use the earliest date if there is a range')
+    date = models.CharField(
+        max_length=5, help_text='Format: YYYY. Use the earliest date if there is a range')
     abbreviation = models.CharField(
         max_length=30, help_text='Bibliographic reference, eg. "Nattier 1992"',
         unique=True)
@@ -76,13 +77,13 @@ class Source (Notable, Publishable, models.Model):
         ordering = ['-date']
 
     @staticmethod
-    def autocomplete_search_fields ():
+    def autocomplete_search_fields():
         return ('id__iexact', 'name__icontains')
 
-    def get_absolute_url (self):
+    def get_absolute_url(self):
         return reverse('source_display', args=[str(self.id)])
 
-    def __str__ (self):
+    def __str__(self):
         return self.name
 
 
@@ -98,37 +99,37 @@ class Text (Publishable, models.Model):
     class Meta:
         ordering = ['identifier']
 
-    def get_absolute_url (self):
+    def get_absolute_url(self):
         return reverse('text_display', args=[str(self.id)])
 
-    def generate_identifier (self):
+    def generate_identifier(self):
         """Generates a composite identifier from the texts identifiers and
         titles."""
         identifiers = self.get_identifiers()
         titles = self.get_titles()
-        identifier = u'; '.join(identifiers + titles)
-        return identifier or u'[No identifier supplied]'
+        identifier = '; '.join(identifiers + titles)
+        return identifier or '[No identifier supplied]'
 
-    def get_person_dates (self):
+    def get_person_dates(self):
         """Returns a list of all person sort dates associated with this
         Text."""
         people = self.get_people()
         return list(people.values_list('sort_date', flat=True))
 
-    def get_dates (self):
+    def get_dates(self):
         """Returns a list of all sort dates associated with this Text."""
         return list(set(self.get_person_dates() + self.get_text_dates()))
 
-    def get_identifiers (self):
+    def get_identifiers(self):
         """Returns a list of all identifiers associated with this Text."""
         identifiers = Identifier.objects.filter(assertion__texts=self)
         return list(identifiers.values_list('name', flat=True).distinct())
 
-    def get_people (self):
+    def get_people(self):
         """Returns a QuerySet of all people associated with this Text."""
         return Person.objects.filter(involvements__assertion__texts=self)
 
-    def get_preferred_dates (self):
+    def get_preferred_dates(self):
         """Returns the preferred dates associated with this Text.
 
         These dates are drawn from the assertion directly, and from
@@ -155,27 +156,27 @@ class Text (Publishable, models.Model):
                 pass
         return list(set(dates))
 
-    def get_sources (self):
+    def get_sources(self):
         """Returns all sources associated with this Text."""
         sources = Source.objects.filter(assertions__texts=self)
         return list(sources.values_list('id', flat=True))
 
-    def get_text_dates (self):
+    def get_text_dates(self):
         """Returns a list of all non-person sort dates associated with this
         Text."""
         dates = Date.objects.filter(assertion__texts=self)
         return list(dates.values_list('sort_date', flat=True))
 
-    def get_titles (self):
+    def get_titles(self):
         """Returns a list of all titles associated with this Text."""
         titles = Title.objects.filter(assertion__texts=self)
         return list(titles.values_list('name', flat=True).distinct())
 
-    def save (self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         self.identifier = self.generate_identifier()
         super(Text, self).save(*args, **kwargs)
 
-    def __str__ (self):
+    def __str__(self):
         return str(self.identifier)
 
 
@@ -185,7 +186,7 @@ class Title (Namable, models.Model):
                                   related_name='titles')
 
     @staticmethod
-    def autocomplete_search_fields ():
+    def autocomplete_search_fields():
         return ('id__iexact', 'name__icontains')
 
 
@@ -224,13 +225,13 @@ class PropertyAssertion (Publishable, models.Model):
              'Can change published items'),
         )
 
-    def delete (self, *args, **kwargs):
+    def delete(self, *args, **kwargs):
         texts = list(self.texts.all())
         super(PropertyAssertion, self).delete(*args, **kwargs)
         for text in texts:
             text.save()
 
-    def get_preferred_dates (self):
+    def get_preferred_dates(self):
         """Returns a list of distinct sort dates associated with this
         PropertyAssertion.
 
@@ -245,11 +246,13 @@ class PropertyAssertion (Publishable, models.Model):
         if not dates:
             # In the absence of direct dates, use dates associated
             # with the people involved.
-            person_dates = Person.objects.filter(involvements__assertion=self).values_list('sort_date', flat=True)
+            person_dates = Person.objects.filter(
+                involvements__assertion=self).values_list('sort_date',
+                                                          flat=True)
             dates = [date for date in list(person_dates) if date]
         return dates
 
-    def has_other_assertions (self):
+    def has_other_assertions(self):
         """Returns True if any of the texts associated with this assertion
         have other property assertions."""
         other = PropertyAssertion.objects.exclude(id=self.id).filter(
@@ -258,8 +261,8 @@ class PropertyAssertion (Publishable, models.Model):
             return True
         return False
 
-    def __str__ (self):
-        argument = u'[No argument provided]'
+    def __str__(self):
+        argument = '[No argument provided]'
         if self.argument:
-            argument = u'%s...' % self.argument[:30]
+            argument = '{}...'.format(self.argument[:30])
         return argument
