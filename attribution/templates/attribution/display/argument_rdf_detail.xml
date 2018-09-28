@@ -1,0 +1,8 @@
+<adm:Assertion rdf:about="{{ assertion.get_argument_reference_uri }}">
+  <rdfs:comment>{{ assertion.argument.strip }}</rdfs:comment>
+  <bdo:workLocation>
+    <rdf:Description>
+      <bdo:workLocationWork rdf:resource="{{ assertion.source.get_reference_uri }}" />
+    </rdf:Description>
+  </bdo:workLocation>
+</adm:Assertion>

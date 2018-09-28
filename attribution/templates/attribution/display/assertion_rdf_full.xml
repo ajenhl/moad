@@ -1,0 +1,48 @@
+{% comment %}
+This template renders a PropertyAssertion in full (ie, including the argument).
+
+It requires that the context contain the texts relevant to the assertion, the titles, identifiers, and dates assigned to the text, and the involvements of people.
+
+These are explicitly provided rather than derived directly from the assertion so that this template may be included by other templates to provide the details relevant to a single other element (person, text, etc).
+{% endcomment %}
+{% include "attribution/display/argument_rdf_detail.xml" %}
+<oa:Annotation rdf:about="{{ assertion.get_reference_uri }}">
+  {% for text in texts %}
+    {% for title in titles %}
+      {% with object=title predicate_uri="http://purl.bdrc.io/ontology/core/workTitle" %}
+        {% include "attribution/display/assertion_rdf_detail.xml" %}
+      {% endwith %}
+    {% endfor %}
+    {% if assertion.source.abbreviation == 'T' %}
+      {% for identifier in identifiers %}
+        {% with object=identifier predicate_uri="http://purl.bdrc.io/ontology/core/workRefTaisho" %}
+          {% include "attribution/display/assertion_rdf_detail.xml" %}
+        {% endwith %}
+      {% endfor %}
+    {% else %}
+      {% for identifier in identifiers %}
+        {% with object=identifier predicate_uri="http://www.w3.org/2004/02/skos/core#altLabel" %}
+          {% include "attribution/display/assertion_rdf_detail.xml" %}
+        {% endwith %}
+      {% endfor %}
+    {% endif %}
+    {% for date in dates %}
+      {% with object=date.strip predicate_uri="http://purl.bdrc.io/ontology/core/workDateOfWriting" %}
+        {% include "attribution/display/assertion_rdf_detail.xml" %}
+      {% endwith %}
+    {% endfor %}
+    {% for involvement in person_involvements %}
+      {% with object_uri=involvement.person.get_reference_uri predicate_uri=involvement.role.predicate_uri %}
+        {% if predicate_uri %}
+          {% include "attribution/display/assertion_rdf_detail.xml" %}
+        {% endif %}
+      {% endwith %}
+    {% endfor %}
+  {% endfor %}
+  <oa:motivatedBy rdf:resource="http://www.w3.org/ns/oa#assessing" />
+  <oa:hasBody>
+    <rdf:Description>
+      <adm:supportedBy rdf:resource="{{ assertion.get_argument_reference_uri }}" />
+    </rdf:Description>
+  </oa:hasBody>
+</oa:Annotation>

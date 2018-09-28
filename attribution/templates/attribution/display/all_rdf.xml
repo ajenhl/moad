@@ -1,0 +1,19 @@
+{% extends "attribution/display/base_rdf.xml" %}
+{% block content %}
+{% for person in people %}
+  {% include "attribution/display/person_rdf_detail.xml" %}
+{% endfor %}
+{% for source in sources %}
+  {% include "attribution/display/source_rdf_detail.xml" %}
+{% endfor %}
+{% for text in texts %}
+  {% include "attribution/display/text_rdf_detail.xml" %}
+{% endfor %}
+{% for assertion in assertions %}
+  {% with texts=assertion.texts.all titles=assertion.titles.all identifiers=assertion.identifiers.all dates=assertion.dates.all person_involvements=assertion.person_involvements.all show_texts=False %}
+    {% include "attribution/display/assertion_rdf_full.xml" %}
+  {% endwith %}
+{% endfor %}
+{% comment %}
+{% endcomment %}
+{% endblock content %}

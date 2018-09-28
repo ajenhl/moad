@@ -1,0 +1,20 @@
+<bdo:Work rdf:about="{{ text.get_reference_uri }}">
+  <bdo:workType rdf:resource="http://purl.bdrc.io/resource/WorkTypeAbstractWork" />
+  <bdo:workLangScript rdf:resource="http://purl.bdrc.io/ontology/core/Zh" />
+  {% for title in text.get_titles %}
+  <bdo:workTitle>{{ title.strip }}</bdo:workTitle>
+  {% endfor %}
+  {% for identifier in text.get_identifiers %}
+  <skos:altLabel>{{ identifier.strip }}</skos:altLabel>
+  {% endfor %}
+  {% for date in text.get_text_dates %}
+  <bdo:workDateOfWriting>{{ date.strip }}</bdo:workDateOfWriting>
+  {% endfor %}
+  {% for person_involvement in text.get_person_involvements %}
+    {% with predicate_uri=person_involvement.role.get_predicate_element %}
+      {% if predicate_uri %}
+  <{{ predicate_uri  }} rdf:resource="{{ person_involvement.person.get_reference_uri }}" />
+      {% endif %}
+    {% endwith %}
+  {% endfor %}
+</bdo:Work>

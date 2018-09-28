@@ -1,3 +1,6 @@
+from urllib.parse import urljoin
+
+from django.contrib.sites.models import Site
 from django.db import models
 
 
@@ -18,7 +21,10 @@ class Namable (models.Model):
         abstract = True
 
     def __str__(self):
-        return self.name
+        return self.name.strip()
+
+    def get_names(self):
+        return self.name.split(', ')
 
 
 class Notable (models.Model):
@@ -36,6 +42,14 @@ class Publishable (models.Model):
 
     class Meta:
         abstract = True
+
+
+class Referenceable:
+
+    def get_reference_uri(self):
+        site = Site.objects.get_current()
+        return urljoin('https://{}'.format(site.domain),
+                       self.get_absolute_url())
 
 
 class SortDatable (models.Model):

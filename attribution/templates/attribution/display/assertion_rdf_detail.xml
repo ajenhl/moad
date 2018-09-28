@@ -1,0 +1,11 @@
+<oa:hasTarget>
+  <rdf:Statement>
+    <rdf:subject rdf:resource="{{ text.get_reference_uri }}" />
+    <rdf:predicate rdf:resource="{{ predicate_uri }}" />
+    {% if object_uri %}
+    <rdf:object rdf:resource="{{ object_uri }}" />
+    {% else %}
+    <rdf:object>{{ object }}</rdf:object>
+    {% endif %}
+  </rdf:Statement>
+</oa:hasTarget>

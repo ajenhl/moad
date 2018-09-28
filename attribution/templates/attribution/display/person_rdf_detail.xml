@@ -1,0 +1,3 @@
+<bdo:Person rdf:about="{{ person.get_reference_uri }}">
+  {% for name in person.get_names %}<skos:altLabel>{{ name.strip }}</skos:altLabel>{% endfor %}
+</bdo:Person>
