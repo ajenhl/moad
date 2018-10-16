@@ -1,5 +1,7 @@
 from django.db import models
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 from ddh_utils.views import FacetedSearchView
 
@@ -53,6 +55,21 @@ def text_display(request, text_id):
     context = {'text': text, 'assertions': assertions, 'summary': summary,
                'url_path': request.path}
     return render(request, 'attribution/display/text.html', context)
+
+
+def text_display_redirect(request, abbreviation, number):
+    """Returns a temporary redirect to the text_display URL for the text
+    identified by a Taisho/etc identifier (eg, T0001). Handles
+    non-zero-filled identifiers."""
+    number_zeros = 4 - len(number)
+    text_id = '{}{}{}'.format(abbreviation, number_zeros * '0', number)
+    try:
+        text = Text.published_objects.get(
+            assertions__source__abbreviation=abbreviation,
+            assertions__identifiers__name=text_id)
+    except Text.DoesNotExist:
+        return HttpResponseNotFound()
+    return HttpResponseRedirect(reverse('text_display', args=[text.id]))
 
 
 class ModelSearchView (FacetedSearchView):
