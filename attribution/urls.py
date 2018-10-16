@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^source/(?P<source_id>\d+)/$', views.source_display,
         name='source_display'),
     url(r'^text/(?P<text_id>\d+)/$', views.text_display, name='text_display'),
-    url(r'^text/(?P<abbreviation>(JB|T|X|ZW))(?P<number>\d+)/$',
+    url(r'^text/(?P<abbreviation>(JB|T|X|ZW))(?P<number>\d+)(?P<suffix>[A-Za-z])/$',
         views.text_display_redirect, name='text_display_redirect'),
 ]
 

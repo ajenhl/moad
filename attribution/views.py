@@ -57,12 +57,13 @@ def text_display(request, text_id):
     return render(request, 'attribution/display/text.html', context)
 
 
-def text_display_redirect(request, abbreviation, number):
+def text_display_redirect(request, abbreviation, number, suffix):
     """Returns a temporary redirect to the text_display URL for the text
     identified by a Taisho/etc identifier (eg, T0001). Handles
     non-zero-filled identifiers."""
     number_zeros = 4 - len(number)
-    text_id = '{}{}{}'.format(abbreviation, number_zeros * '0', number)
+    text_id = '{}{}{}{}'.format(abbreviation, number_zeros * '0', number,
+                                suffix)
     try:
         text = Text.published_objects.get(
             assertions__source__abbreviation=abbreviation,
