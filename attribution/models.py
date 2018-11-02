@@ -194,7 +194,7 @@ class PropertyAssertion (Publishable, models.Model):
 
     texts = models.ManyToManyField(Text, related_name='assertions')
     people = models.ManyToManyField(Person, through=PersonInvolvement)
-    source = models.ForeignKey(Source, related_name='assertions')
+    sources = models.ManyToManyField(Source, related_name='assertions')
     source_detail = models.TextField(blank=True)
     argument = models.TextField(blank=True)
     is_preferred = models.BooleanField(default=False)
@@ -209,7 +209,6 @@ class PropertyAssertion (Publishable, models.Model):
 
     class Meta:
         verbose_name = 'assertion'
-        ordering = ['source']
         permissions = (
             ('change_assertion_author',
              'Can change the author of an assertion'),

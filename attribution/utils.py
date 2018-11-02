@@ -7,7 +7,8 @@ def _assemble_preferred_assertion_data(assertion, property_name):
         value = '; '.join([str(prop) for prop
                            in getattr(assertion, property_name).all()])
         data = {'value': value, 'id': assertion.pk,
-                'source': assertion.source.abbreviation}
+                'sources': [source.abbreviation for source
+                            in assertion.sources.all()]}
     return data
 
 
@@ -25,7 +26,8 @@ def _get_person_summary_data(assertions):
         value = '; '.join([str(person) for person in
                            assertion.people.filter(involvements__role=role)])
         data[role] = {'value': value, 'id': assertion.pk,
-                      'source': assertion.source.abbreviation}
+                      'sources': [source.abbreviation for source
+                                  in assertion.sources.all()]}
     return data
 
 

@@ -143,16 +143,16 @@ class PropertyAssertionAdmin (PublishableModelAdmin):
         (None, {'classes': ('placeholder dates-group',), 'fields': ()}),
         (None, {'classes': ('placeholder identifiers-group',), 'fields': ()}),
         ('Source and argument',
-         {'fields': ('source', 'source_detail', 'argument', 'is_preferred')}),
+         {'fields': ('sources', 'source_detail', 'argument', 'is_preferred')}),
         ('Metadata',
          {'fields': ('author', 'contributors', 'status')}),
     )
     filter_horizontal = ['texts', 'contributors']
     inlines = [DateInline, IdentifierInline, TitleInline,
                PersonInvolvementInline]
-    raw_id_fields = ('source',)
+    raw_id_fields = ('sources',)
     autocomplete_lookup_fields = {
-        'fk': ['source'],
+        'm2m': ['sources'],
     }
 
     def get_readonly_fields(self, request, obj=None):
@@ -186,7 +186,7 @@ class PropertyAssertionAdmin (PublishableModelAdmin):
             text.save()
 
     def source_abbreviation(self, obj):
-        return obj.source.abbreviation
+        return '; '.join([source.abbreviation for source in obj.sources.all()])
 
 
 class SourceAdmin (PublishableModelAdmin):
