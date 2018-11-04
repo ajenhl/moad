@@ -71,7 +71,7 @@
           {% endfor %}
         </ul>
       </td>
-      <td>{% if assertion.argument %}{{ assertion.argument|linebreaks }}{% endif %}
+      <td>{% if assertion.argument %}{{ assertion.argument|linebreaks|urlize }}{% endif %}
         <p>Entry author: {% with author=assertion.author %}{{ author.first_name }} {{ author.last_name }}{% endwith %}</p>
         <p><a href="{% url 'admin:attribution_propertyassertion_change' assertion.pk %}">Edit</a></p>
       </td>
