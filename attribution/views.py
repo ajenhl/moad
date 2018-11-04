@@ -66,7 +66,7 @@ def text_display_redirect(request, abbreviation, number, suffix):
                                 suffix)
     try:
         text = Text.published_objects.get(
-            assertions__source__abbreviation=abbreviation,
+            assertions__sources__abbreviation=abbreviation,
             assertions__identifiers__name=text_id)
     except Text.DoesNotExist:
         return HttpResponseNotFound()
