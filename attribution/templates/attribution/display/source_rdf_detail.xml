@@ -1,0 +1,5 @@
+<bdo:Work rdf:about="{{ source.get_reference_uri }}">
+  <bdo:workType rdf:resource="http://purl.bdrc.io/resource/WorkTypeAbstractWork"/>
+  <skos:altLabel>{{ source.name.strip }}</skos:altLabel>
+  <bdo:workBibLabel>{{ source.abbreviation }}</bdo:workBibLabel>
+</bdo:Work>

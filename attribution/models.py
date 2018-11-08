@@ -1,8 +1,12 @@
+from urllib.parse import urljoin
+
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 
-from .behaviours import Namable, Notable, Publishable, SortDatable
+from .behaviours import Namable, Notable, Publishable, Referenceable, \
+    SortDatable
 from . import constants
 from .managers import PublishedManager
 
@@ -19,7 +23,8 @@ class Identifier (Namable, Notable, models.Model):
                                   related_name='identifiers')
 
 
-class Person (Namable, Notable, Publishable, SortDatable, models.Model):
+class Person (Namable, Notable, Publishable, Referenceable, SortDatable,
+              models.Model):
 
     date = models.TextField(blank=True)
     author = models.ForeignKey(User, related_name='authored_persons')
@@ -57,14 +62,22 @@ class PersonInvolvement (models.Model):
 
 class PersonRole (Namable, Notable, Publishable, models.Model):
 
-    pass
+    predicate_uri = models.CharField(blank=True, max_length=150)
+
+    def get_predicate_element(self):
+        # This is horrible.
+        uri = self.predicate_uri
+        for prefix, base_uri in constants.ONTOLOGY_BASE_URIS.items():
+            if uri.startswith(base_uri):
+                return '{}:{}'.format(prefix, uri[len(base_uri):])
 
 
-class Source (Notable, Publishable, models.Model):
+class Source (Notable, Publishable, Referenceable, models.Model):
 
     name = models.TextField(help_text='Full bibliographic details')
     date = models.CharField(
-        max_length=5, help_text='Format: YYYY. Use the earliest date if there is a range')
+        max_length=5,
+        help_text='Format: YYYY. Use the earliest date if there is a range')
     abbreviation = models.CharField(
         max_length=30, help_text='Bibliographic reference, eg. "Nattier 1992"',
         unique=True)
@@ -87,7 +100,7 @@ class Source (Notable, Publishable, models.Model):
         return self.name
 
 
-class Text (Publishable, models.Model):
+class Text (Publishable, Referenceable, models.Model):
 
     identifier = models.TextField(blank=True,
                                   help_text=constants.TEXT_IDENTIFIER_HELP)
@@ -124,6 +137,11 @@ class Text (Publishable, models.Model):
         """Returns a list of all identifiers associated with this Text."""
         identifiers = Identifier.objects.filter(assertion__texts=self)
         return list(identifiers.values_list('name', flat=True).distinct())
+
+    def get_person_involvements(self):
+        """Returns a QuerySet of all person involvements association with this
+        Text."""
+        return PersonInvolvement.objects.filter(assertion__texts=self)
 
     def get_people(self):
         """Returns a QuerySet of all people associated with this Text."""
@@ -190,7 +208,7 @@ class Title (Namable, models.Model):
         return ('id__iexact', 'name__icontains')
 
 
-class PropertyAssertion (Publishable, models.Model):
+class PropertyAssertion (Publishable, Referenceable, models.Model):
 
     texts = models.ManyToManyField(Text, related_name='assertions')
     people = models.ManyToManyField(Person, through=PersonInvolvement)
@@ -214,14 +232,12 @@ class PropertyAssertion (Publishable, models.Model):
              'Can change the author of an assertion'),
             ('change_assertion_contributors',
              'Can change contributors to an assertion'),
-            ('change_assertion_status',
-             'Can change publication status'),
+            ('change_assertion_status', 'Can change publication status'),
             # While the following permission is tied to this model, it
             # is used as a convenient way to determine whether a user
             # has permission to change *any* of the publishable model
             # items.
-            ('change_published_items',
-             'Can change published items'),
+            ('change_published_items', 'Can change published items'),
         )
 
     def delete(self, *args, **kwargs):
@@ -229,6 +245,14 @@ class PropertyAssertion (Publishable, models.Model):
         super(PropertyAssertion, self).delete(*args, **kwargs)
         for text in texts:
             text.save()
+
+    def get_absolute_url(self):
+        return reverse('assertion_display', args=[str(self.id)])
+
+    def get_argument_reference_uri(self):
+        site = Site.objects.get_current()
+        return urljoin('https://{}'.format(site.domain),
+                       reverse('argument_display', args=[str(self.id)]))
 
     def get_preferred_dates(self):
         """Returns a list of distinct sort dates associated with this
