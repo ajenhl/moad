@@ -45,7 +45,7 @@
           {% include "attribution/display/text_property.html" with title="Identifiers" properties=assertion.identifiers.all %}
         </ul>
       </td>
-      <td>{{ assertion.argument|linebreaks }}
+      <td>{{ assertion.argument|linebreaks|urlize }}
         <p><a href="{% url 'admin:attribution_propertyassertion_change' assertion.pk %}">Edit</a></p>
       </td>
       <td>{% if assertion.source_detail %}{{ assertion.source_detail|linebreaks }}{% endif %}</td>
