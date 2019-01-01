@@ -1,5 +1,5 @@
 {% if data %}
-  {{ data.value }} [<a href="#assertion-{{ data.id }}">{{ data.source }}</a>]
+  {{ data.value }} [<a href="#assertion-{{ data.id }}">{% for source in data.sources %}{{ source }}{% if not forloop.last %}; {% endif %}{% endfor %}</a>]
 {% else %}
   [None]
 {% endif %}
