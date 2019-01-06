@@ -34,8 +34,9 @@
 
 {% with identifier=summary.identifier %}
 {% if identifier.sources.0 == 'T' %}
-<p>There may be translations for this text listed in the <a href="http://mbingenheimer.net/tools/bibls/transbibl.html#{{ identifier.value }}">Bibliography of Translations from the Chinese Buddhist Canon into Western Languages</a>. If translations are listed, this link will take you directly to them. However, if no translations are listed, the link will lead only to the head of the page.
-</p>
+<p>There may be translations for this text listed in the <a href="http://mbingenheimer.net/tools/bibls/transbibl.html#{{ identifier.value }}">Bibliography of Translations from the Chinese Buddhist Canon into Western Languages</a>. If translations are listed, this link will take you directly to them. However, if no translations are listed, the link will lead only to the head of the page.</p>
+
+<p>There are resources for the study of this text in the <a href="http://21dzk.l.u-tokyo.ac.jp/SAT2018/{{ identifier.value }}.html">SAT Daizōkyō Text Dabatase</a> (Saṃgaṇikīkṛtaṃ Taiśotripiṭakaṃ).</p>
 {% endif %}
 {% endwith %}
 
