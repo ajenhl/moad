@@ -123,12 +123,6 @@ class Text (Publishable, Referenceable, models.Model):
         identifier = '; '.join(identifiers + titles)
         return identifier or '[No identifier supplied]'
 
-    def get_person_dates(self):
-        """Returns a list of all person sort dates associated with this
-        Text."""
-        people = self.get_people()
-        return list(people.values_list('sort_date', flat=True))
-
     def get_dates(self):
         """Returns a list of all sort dates associated with this Text."""
         return list(set(self.get_person_dates() + self.get_text_dates()))
@@ -138,6 +132,17 @@ class Text (Publishable, Referenceable, models.Model):
         identifiers = Identifier.objects.filter(assertion__texts=self)
         return list(identifiers.values_list('name', flat=True).distinct())
 
+    def get_identifiers_with_source(self):
+        identifiers = []
+        assertions = self.assertions.filter(
+            identifiers__name__isnull=False).distinct().prefetch_related(
+                'identifiers', 'sources')
+        for assertion in assertions:
+            for identifier in assertion.identifiers.all():
+                for source in assertion.sources.all():
+                    identifiers.append((identifier.name, source.abbreviation))
+        return identifiers
+
     def get_person_involvements(self):
         """Returns a QuerySet of all person involvements association with this
         Text."""
@@ -146,6 +151,12 @@ class Text (Publishable, Referenceable, models.Model):
     def get_people(self):
         """Returns a QuerySet of all people associated with this Text."""
         return Person.objects.filter(involvements__assertion__texts=self)
+
+    def get_person_dates(self):
+        """Returns a list of all person sort dates associated with this
+        Text."""
+        people = self.get_people()
+        return list(people.values_list('sort_date', flat=True))
 
     def get_preferred_dates(self):
         """Returns the preferred dates associated with this Text.
@@ -182,7 +193,8 @@ class Text (Publishable, Referenceable, models.Model):
     def get_text_dates(self):
         """Returns a list of all non-person sort dates associated with this
         Text."""
-        dates = Date.objects.filter(assertion__texts=self)
+        dates = Date.objects.filter(sort_date__isnull=False,
+                                    assertion__texts=self)
         return list(dates.values_list('sort_date', flat=True))
 
     def get_titles(self):

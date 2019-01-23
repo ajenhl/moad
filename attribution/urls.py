@@ -9,6 +9,10 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.home_display, name='home_display'),
+    url(r'argument/(?P<assertion_id>\d+)/$', views.argument_display,
+        name='argument_display'),
+    url(r'^assertion/(?P<assertion_id>\d+)/$', views.assertion_display,
+        name='assertion_display'),
     url(r'^date/$', views.date_list_display, name='date_list_display'),
     url(r'^date/(?P<date>-?\d+)/$', views.date_display, name='date_display'),
     url(r'^person/(?P<person_id>\d+)/$', views.person_display,

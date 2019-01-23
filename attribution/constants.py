@@ -7,4 +7,11 @@ ONTOLOGY_BASE_URIS = {
     'skos': 'http://www.w3.org/2004/02/skos/core#',
 }
 
+# List of source abbreviations that have a specific matching BDRC
+# predicate. These are the abbreviations used in CBETA.
+SOURCE_ABBREVIATIONS_WITH_PREDICATES = [
+    'A', 'B', 'C', 'D', 'F', 'G', 'GA', 'GB', 'I', 'J', 'K', 'L', 'M', 'N',
+    'P', 'S', 'T', 'U', 'X', 'Y', 'ZS', 'ZW',
+]
+
 TEXT_IDENTIFIER_HELP = 'A derived field holding all of the identifiers asserted for this text.'

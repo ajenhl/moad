@@ -4,11 +4,15 @@
   {% for title in text.get_titles %}
   <bdo:workTitle>{{ title.strip }}</bdo:workTitle>
   {% endfor %}
-  {% for identifier in text.get_identifiers %}
+  {% for identifier, source in text.get_identifiers_with_source %}
+  {% if source in source_abbreviations %}
+  <bdo:workCBCSigla{{ source }}>{{ identifier.strip }}</bdo:workCBCSigla{{ source }}>
+  {% else %}
   <skos:altLabel>{{ identifier.strip }}</skos:altLabel>
+  {% endif %}
   {% endfor %}
   {% for date in text.get_text_dates %}
-  <bdo:workDateOfWriting>{{ date.strip }}</bdo:workDateOfWriting>
+  <bdo:workDateOfWriting>{{ date }}</bdo:workDateOfWriting>
   {% endfor %}
   {% for person_involvement in text.get_person_involvements %}
     {% with predicate_uri=person_involvement.role.get_predicate_element %}

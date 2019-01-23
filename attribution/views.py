@@ -1,5 +1,5 @@
 from django.db import models
-from django.http import HttpResponseNotFound, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
@@ -14,6 +14,18 @@ import attribution.utils
 def home_display(request):
     context = {'url_path': request.path}
     return render(request, 'attribution/display/home.html', context)
+
+
+def argument_display(request, assertion_id):
+    # View matching URLs referenced in RDF but for which there need be
+    # no HTML representation just yet.
+    raise Http404
+
+
+def assertion_display(request, assertion_id):
+    # View matching URLs referenced in RDF but for which there need be
+    # no HTML representation just yet.
+    raise Http404
 
 
 def date_display(request, date):
@@ -69,7 +81,7 @@ def text_display_redirect(request, abbreviation, number, suffix):
             assertions__sources__abbreviation=abbreviation,
             assertions__identifiers__name=text_id)
     except Text.DoesNotExist:
-        return HttpResponseNotFound()
+        raise Http404
     return HttpResponseRedirect(reverse('text_display', args=[text.id]))
 
 

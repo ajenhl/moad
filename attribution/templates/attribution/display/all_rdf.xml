@@ -10,7 +10,7 @@
   {% include "attribution/display/text_rdf_detail.xml" %}
 {% endfor %}
 {% for assertion in assertions %}
-  {% with texts=assertion.texts.all titles=assertion.titles.all identifiers=assertion.identifiers.all dates=assertion.dates.all person_involvements=assertion.person_involvements.all show_texts=False %}
+  {% with texts=assertion.texts.all titles=assertion.titles.all identifiers=assertion.identifiers.all dates=assertion.dates.all person_involvements=assertion.person_involvements.all show_texts=False source_abbreviations=source_abbreviations%}
     {% include "attribution/display/assertion_rdf_full.xml" %}
   {% endwith %}
 {% endfor %}
